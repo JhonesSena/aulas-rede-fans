@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Atividade Prática 01 - Projeto Shopee</title>
+    <style>
+        @page { size: A4; margin: 20mm; }
+        body { font-family: 'Arial', sans-serif; font-size: 11pt; line-height: 1.5; color: #000; background: #fff; margin: 0; padding: 0; }
+        h1 { font-size: 16pt; text-align: center; margin-bottom: 20px; text-transform: uppercase; border-bottom: 2px solid #000; padding-bottom: 5px; }
+        h2 { font-size: 13pt; border-bottom: 1px solid #ccc; padding-bottom: 3px; margin-top: 25px; margin-bottom: 10px; }
+        h3 { font-size: 11pt; margin-top: 15px; margin-bottom: 5px; }
+        .header { margin-bottom: 25px; }
+        .header p { margin: 2px 0; font-weight: bold; }
+        .fields { display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px; }
+        .field-row { display: flex; justify-content: flex-start; align-items: center; }
+        .field-label { font-weight: bold; margin-right: 10px; }
+        .field-line { flex-grow: 1; border-bottom: 1px solid #000; min-height: 20px; }
+        ul { margin-top: 5px; margin-bottom: 15px; padding-left: 25px; }
+        li { margin-bottom: 5px; }
+        .warning-box { border: 1px solid #000; background-color: #f9f9f9; padding: 10px 15px; margin-top: 15px; margin-bottom: 15px; }
+        .warning-box h4 { margin: 0 0 5px 0; font-size: 11pt; text-transform: uppercase; }
+        .warning-box p { margin: 0; font-size: 10pt; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .deliverable-box { border: 2px dashed #000; padding: 15px; margin-top: 20px; text-align: center; background-color: #f0f0f0; font-weight: bold; }
+        .highlight { font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <p>Disciplina: Redes de Computadores</p>
+        <p>Atividade Prática 01: Infraestrutura e Cabeamento Estruturado</p>
+    </div>
+
+    <div class="fields">
+        <div class="field-row">
+            <span class="field-label">Nome do Aluno:</span>
+            <div class="field-line"></div>
+        </div>
+        <div class="field-row">
+            <span class="field-label">E-mail Corporativo/Acadêmico:</span>
+            <div class="field-line"></div>
+        </div>
+    </div>
+
+    <h1>Estudo de Caso: Operação Shopee - Alta Densidade</h1>
+
+    <h2>1. O Cenário Base</h2>
+    <p>Uma operação de atendimento da Shopee precisa ser instalada em um galpão de vão livre com exatamente <span class="highlight">200 metros quadrados</span>. O objetivo é estabelecer um Call Center de alta densidade operando em regime de missão crítica.</p>
+
+    <h2>2. Requisitos de Ocupação (103 posições ativas)</h2>
+    <ul>
+        <li><span class="highlight">85 Posições de Atendimento (PA):</span> Núcleo da operação.</li>
+        <li><span class="highlight">10 Posições de Supervisão/Backoffice:</span> Administração e monitoramento de qualidade.</li>
+        <li><span class="highlight">5 Posições de Gerência:</span> Diretoria com necessidade de privacidade acústica parcial ou total.</li>
+        <li><span class="highlight">3 Máquinas de CPD/Monitoramento:</span> Controle e operação do Data Center Local.</li>
+    </ul>
+
+    <h2>3. Restrições Técnicas Obrigatórias</h2>
+    <div class="grid-2">
+        <div class="warning-box">
+            <h4>Rede 100% Cabeada e Omissão de Wi-Fi</h4>
+            <p>Para garantir a estabilidade do tráfego de voz (VoIP) e sistemas internos, o uso de Wi-Fi para as estações de trabalho é estritamente proibido. Não haverá tráfego de dados operacionais sem fio.</p>
+        </div>
+        <div class="warning-box">
+            <h4>Ponto de Convergência Único</h4>
+            <p>Todos os 103 pontos de rede devem convergir fisicamente para uma única Sala de Telecomunicações (CPD/Data Center Local), que atuará como coração da operação.</p>
+        </div>
+    </div>
+
+    <h2>4. O Desafio Projetual</h2>
+    <p>Como é a primeira aula, queremos apenas ativar sua imaginação de engenheiro(a). Sua equipe deve analisar a planta baixa e solucionar os seguintes desafios de forma criativa:</p>
+    <ul>
+        <li><span class="highlight">Onde colocar as mesas?</span> Como desenhar o layout para caber as 103 posições sem virar uma bagunça e deixando espaço para as pessoas andarem?</li>
+        <li><span class="highlight">Por onde passam os fios?</span> Nenhum computador tem Wi-Fi. Por onde você vai passar mais de 100 cabos de rede sem que as pessoas tropecem neles?</li>
+        <li><span class="highlight">Onde fica a Sala do Servidor?</span> Onde alocar essa sala (o "coração" da operação) para que os cabos não fiquem excessivamente longos pelo escritório?</li>
+        <li><span class="highlight">E a organização final?</span> Imagina 103 cabos chegando todos juntos na porta da sala do servidor. Como você faria para não virar um ninho de rato?</li>
+    </ul>
+
+    <div class="deliverable-box">
+        ENTREGÁVEL ESPERADO:<br><br>
+        Um croqui ou planta baixa unifilar justificando:<br>
+        O zoneamento das equipes, a localização exata do rack/CPD, o traçado das rotas de cabeamento principais e a lógica por trás da escolha do mobiliário.
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 01 - O Kick-off (Redes de Computadores)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800;900&display=swap');
+
+        :root {
+            --primary: #0070f3;
+            --secondary: #00dfd8;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #111111;
+            color: #ffffff;
+            overflow: hidden;
+            margin: 0;
+            height: 100vh;
+        }
+
+        #progress-bar-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 50;
+        }
+
+        #progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            transition: width 0.4s ease;
+        }
+
+        #deck {
+            position: relative;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+
+        .slide {
+            flex: 0 0 100vw;
+            height: 100vh;
+            padding: 2rem 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            opacity: 0.1;
+            transform: scale(0.95);
+            transition: all 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        h1 {
+            font-size: 6rem;
+            line-height: 1.1;
+            font-weight: 900;
+            margin-bottom: 2rem;
+            background: linear-gradient(to right, #00dfd8, #0070f3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .sub-header {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            margin-bottom: 1.5rem;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 2px solid var(--glass-border);
+            border-radius: 2rem;
+            padding: 3rem;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .slide-text {
+            font-size: 2.5rem;
+            line-height: 1.4;
+            font-weight: 700;
+            color: #cccccc;
+        }
+
+        .highlight {
+            color: #ffffff;
+            font-weight: 900;
+        }
+
+        .btn-print {
+            padding: 1rem 2rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(to right, #0070f3, #00dfd8);
+            border: none;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 2rem;
+            position: relative;
+            z-index: 999;
+        }
+
+        .btn-print:hover {
+            transform: translateY(-5px);
+        }
+
+        @media print {
+            body {
+                background: white;
+                color: black;
+                overflow: visible;
+                height: auto;
+            }
+
+            h1 {
+                background: none;
+                -webkit-text-fill-color: black;
+            }
+
+            #progress-bar-container,
+            .no-print {
+                display: none;
+            }
+
+            #deck {
+                flex-direction: column;
+                transform: none !important;
+                height: auto;
+            }
+
+            .slide {
+                opacity: 1;
+                transform: scale(1);
+                min-height: 100vh;
+                height: auto;
+                page-break-after: always;
+                page-break-inside: avoid;
+                background: white;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 2cm !important;
+            }
+
+            .glass-card {
+                background: #f9f9f9 !important;
+                border: 2px solid #000 !important;
+                filter: none !important;
+                box-shadow: none !important;
+                page-break-inside: avoid;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                margin: 0 auto;
+            }
+
+            .slide-text,
+            .highlight,
+            .text-gray-300,
+            .text-gray-400,
+            .text-gray-500,
+            .text-white {
+                color: #000 !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="progress-bar-container">
+        <div id="progress-bar"></div>
+    </div>
+
+    <div id="deck">
+
+        <!-- SLIDE 1: Capa -->
+        <section class="slide active">
+            <div class="sub-header">Engenharia de Software - 4º Período</div>
+            <h1>REDES DE COMPUTADORES</h1>
+            <div class="glass-card mt-8">
+                <p class="slide-text highlight uppercase">Aula 01: O Kick-off</p>
+                <p class="text-3xl text-gray-400 font-bold mt-4">Professor Jhones Sena</p>
+            </div>
+        </section>
+
+        <!-- SLIDE 2: Biografia do Professor -->
+        <section class="slide">
+            <div class="sub-header">Apresentação</div>
+            <h1>PROFESSOR JHONES SENA</h1>
+            <div class="glass-card text-left max-w-5xl">
+                <ul class="text-3xl text-gray-300 font-bold space-y-4 ml-8 list-disc">
+                    <li><span class="highlight text-[#00dfd8]">Cursando Mestrado</span></li>
+                    <li>Licenciatura em Matemática</li>
+                    <li>Pós-Graduação em Gestão de Segurança da Informação</li>
+                    <li>Graduado em Sistemas de Informação</li>
+                    <li><span class="highlight text-white">17 Anos no setor de TI</span>, atuando como programador
+                        fullstack e administrador de redes.</li>
+                    <li>Desenvolvimento de projetos robustos para várias empresas.</li>
+                </ul>
+                <div class="mt-8 flex justify-between items-center bg-black/40 p-4 rounded-2xl border border-white/10">
+                    <p class="text-2xl text-gray-400">🔗 linkedin.com/in/jhonessena/</p>
+                    <p class="text-2xl text-gray-400">✉️ profjhonessena@gmail.com</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 3: Missão e Objetivo -->
+        <section class="slide">
+            <div class="sub-header">Da Máquina ao Multiverso Digital</div>
+            <h1>MISSÃO: CONECTAR O MUNDO</h1>
+            <div class="glass-card text-left max-w-5xl">
+                <p class="text-4xl font-black text-[#00dfd8] mb-4">Objetivo da disciplina:</p>
+                <p class="slide-text text-3xl leading-relaxed">
+                    Dominar os fundamentos, ferramentas e práticas de redes de computadores para projetar, simular e
+                    solucionar problemas de conectividade e comunicação em sistemas modernos.
+                </p>
+            </div>
+        </section>
+
+
+
+        <!-- SLIDE 5: Distribuição de Pontos -->
+        <section class="slide">
+            <div class="sub-header">Avaliação Trimestral</div>
+            <h1>DISTRIBUIÇÃO DE PONTOS</h1>
+            <div class="glass-card text-center w-full max-w-6xl">
+                <table class="w-full text-3xl font-bold text-gray-300 border-collapse">
+                    <thead>
+                        <tr class="bg-gradient-to-r from-[#e67e22] to-[#d35400] text-white">
+                            <th class="py-4 border border-white/20 rounded-tl-xl">1ª Etapa</th>
+                            <th class="py-4 border border-white/20">2ª Etapa</th>
+                            <th class="py-4 border border-white/20 rounded-tr-xl">3ª Etapa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="bg-white/5">
+                            <td class="py-4 px-6 border border-white/10">5pts – Aulas</td>
+                            <td class="py-4 px-6 border border-white/10">5pts – Aulas</td>
+                            <td class="py-4 px-6 border border-white/10 text-white">10pts – Aulas</td>
+                        </tr>
+                        <tr class="bg-white/10">
+                            <td class="py-4 px-6 border border-white/10">5pts – Atividades</td>
+                            <td class="py-4 px-6 border border-white/10 text-white">10pts – Atividades</td>
+                            <td class="py-4 px-6 border border-white/10 text-white">10pts - Prova F</td>
+                        </tr>
+                        <tr class="bg-white/5">
+                            <td class="py-4 px-6 border border-white/10 text-white">15pts - Prova</td>
+                            <td class="py-4 px-6 border border-white/10 text-white">15pts – Prova</td>
+                            <td class="py-4 px-6 border border-white/10 highlight text-[#00dfd8]">25pts - Prova</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SLIDE 4: Avaliação Final -->
+        <section class="slide">
+            <div class="sub-header">Avaliação Final</div>
+            <h1>ARTIGO CIENTÍFICO</h1>
+            <div class="glass-card text-left max-w-5xl">
+                <p class="text-4xl font-black text-[#00dfd8] mb-4">Entrega do Artigo Científico</p>
+                <p class="slide-text text-3xl leading-relaxed">
+                    A forma de avaliação no final do semestre contará com a <span class="highlight text-white">produção
+                        e entrega de um artigo científico</span> abordando os temas estudados.
+                </p>
+                <p class="text-2xl text-gray-400 mt-6">
+                    Este trabalho será fundamental para consolidar a pesquisa, prática e a teoria explorada nas missões
+                    da disciplina.
+                </p>
+            </div>
+        </section>
+
+
+
+        <!-- SLIDE 5: Storytelling pedagógico -->
+        <section class="slide">
+            <div class="sub-header">Jornada do Aluno</div>
+            <h1>STORYTELLING PEDAGÓGICO</h1>
+            <div class="glass-card text-left max-w-5xl">
+                <ul class="text-3xl text-gray-300 font-bold space-y-4 ml-8 list-disc">
+                    <li><span class="highlight text-white">Conceitos básicos</span></li>
+                    <li>Criar redes funcionais e eficientes.</li>
+                    <li>Diagnosticar e resolver falhas.</li>
+                    <li><span class="highlight text-[#00dfd8]">Simular redes reais com o Packet Tracer</span></li>
+                    <li>Preparar-se para o mundo das certificações e do mercado</li>
+                    <li>Projetos reais</li>
+                    <li>Provas</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SLIDE 8: Bibliografia -->
+        <section class="slide">
+            <div class="sub-header">Nossas Referências</div>
+            <h1>BIBLIOGRAFIA OFICIAL</h1>
+            <div class="glass-card flex justify-around items-start max-w-6xl space-x-6">
+                <!-- Book 1 -->
+                <div class="text-center w-1/3">
+                    <div
+                        class="h-64 w-44 mx-auto rounded-r-2xl rounded-l-md shadow-[0_0_15px_rgba(0,223,216,0.5)] mb-4 bg-gradient-to-br from-blue-900 to-black border-2 border-l-8 border-l-gray-800 border-blue-500/50 flex flex-col justify-center items-center p-4 relative overflow-hidden">
+                        <div
+                            class="absolute top-0 left-0 w-full h-full bg-[linear-gradient(90deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%)] w-4">
+                        </div>
+                        <span
+                            class="text-white font-black text-xl leading-tight uppercase tracking-wider text-center">Fundamentos
+                            de Redes</span>
+                    </div>
+                    <p class="text-2xl font-bold text-white mb-2">Fundamentos de Redes de Computadores</p>
+                    <p class="text-xl text-gray-400">BARRETO, Jeanine et al.</p>
+                    <p class="text-lg text-[#00dfd8] mt-2">Grupo A, 2018</p>
+                </div>
+                <!-- Book 2 -->
+                <div class="text-center w-1/3">
+                    <div
+                        class="h-64 w-44 mx-auto rounded-r-2xl rounded-l-md shadow-[0_0_15px_rgba(0,223,216,0.5)] mb-4 bg-gradient-to-br from-purple-900 to-black border-2 border-l-8 border-l-gray-800 border-purple-500/50 flex flex-col justify-center items-center p-4 relative overflow-hidden">
+                        <div
+                            class="absolute top-0 left-0 w-full h-full bg-[linear-gradient(90deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%)] w-4">
+                        </div>
+                        <span
+                            class="text-white font-black text-xl leading-tight uppercase tracking-wider text-center">Redes
+                            e Internet</span>
+                    </div>
+                    <p class="text-2xl font-bold text-white mb-2">Redes de Computadores e Internet (6ª ed.)</p>
+                    <p class="text-xl text-gray-400">COMER, Douglas E.</p>
+                    <p class="text-lg text-[#00dfd8] mt-2">Grupo A, 2016</p>
+                </div>
+                <!-- Book 3 -->
+                <div class="text-center w-1/3">
+                    <div
+                        class="h-64 w-44 mx-auto rounded-r-2xl rounded-l-md shadow-[0_0_15px_rgba(0,223,216,0.5)] mb-4 bg-gradient-to-br from-emerald-900 to-black border-2 border-l-8 border-l-gray-800 border-emerald-500/50 flex flex-col justify-center items-center p-4 relative overflow-hidden">
+                        <div
+                            class="absolute top-0 left-0 w-full h-full bg-[linear-gradient(90deg,rgba(255,255,255,0.1)_0%,rgba(255,255,255,0)_100%)] w-4">
+                        </div>
+                        <span
+                            class="text-white font-black text-xl leading-tight uppercase tracking-wider text-center">Tecnologia
+                            e Org.</span>
+                    </div>
+                    <p class="text-2xl font-bold text-white mb-2">Série Tecnologia e Organização da Informação</p>
+                    <p class="text-xl text-gray-400">PALETTA, Francisco C.</p>
+                    <p class="text-lg text-[#00dfd8] mt-2">Editora Blucher, 2020</p>
+                </div>
+            </div>
+        </section>
+
+
+
+
+
+
+
+        <!-- SLIDE: Imagem Cisco -->
+        <section class="slide">
+            <div class="sub-header">Parceria</div>
+            <h1>A MAIOR ACADEMIA DO MUNDO</h1>
+            <div class="glass-card text-center max-w-7xl">
+                <img src="CISCO.png" alt="Cisco Networking Academy"
+                    class="mx-auto rounded-lg max-h-[550px] object-contain">
+            </div>
+        </section>
+
+        <!-- SLIDE 9: Cisco NetAcad -->
+        <section class="slide">
+            <div class="sub-header">Plataforma Oficial</div>
+            <h1>CISCO NETWORKING ACADEMY</h1>
+            <div class="glass-card text-left max-w-5xl">
+                <p class="text-4xl font-black text-[#00dfd8] mb-6">👨‍💻 O que é o NetAcad?</p>
+                <ul class="text-3xl text-gray-300 font-bold space-y-6 ml-8 list-disc">
+                    <li><span class="highlight text-white">Plataforma oficial da Cisco</span> para ensino de redes,
+                        tecnologia e cibersegurança.</li>
+                    <li><span class="highlight text-[#00dfd8]">Totalmente gratuita</span> para alunos credenciados.</li>
+                    <li>Oferece <span class="highlight text-white">certificações reconhecidas mundialmente</span>.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SLIDE 10: O que você vai encontrar no NetAcad -->
+        <section class="slide">
+            <div class="sub-header">Recursos da Plataforma</div>
+            <h1>O QUE VOCÊ VAI ENCONTRAR?</h1>
+            <div class="glass-card text-left max-w-5xl">
+                <ul class="text-3xl text-gray-300 font-bold space-y-6 ml-8 list-disc">
+                    <li>Cursos interativos.</li>
+                    <li>Vídeos, simulações, quizzes e laboratórios práticos.</li>
+                    <li><span class="highlight text-[#00dfd8]">Certificados válidos para o currículo.</span></li>
+                    <li>Acesso ao <span class="highlight text-white">Packet Tracer</span>, a principal ferramenta de
+                        simulação de redes.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SLIDE 11: Como acessar -->
+        <section class="slide">
+            <div class="sub-header">Primeiros Passos</div>
+            <h1>COMO ACESSAR O NETACAD</h1>
+            <div class="glass-card text-center max-w-5xl">
+                <p class="text-3xl text-gray-300 font-bold leading-relaxed mb-8">
+                    Para acessar a plataforma, você precisará do seu <span class="highlight text-[#00dfd8]">e-mail de
+                        convite</span>.
+                </p>
+                <div class="bg-black/40 p-6 rounded-2xl border border-white/10 inline-block">
+                    <p class="text-4xl font-black text-white">netacad.com</p>
+                </div>
+                <p class="text-2xl text-gray-400 mt-8">
+                    Fique atento à sua caixa de entrada para ativar sua conta oficial da turma!
+                </p>
+            </div>
+        </section>
+
+
+
+
+
+
+        <!-- SLIDE 5: O que é Rede -->
+        <section class="slide">
+            <div class="sub-header">Fundamentos</div>
+            <h1>O QUE É UMA REDE?</h1>
+            <div class="glass-card">
+                <p class="text-5xl font-black text-[#00dfd8] mb-6">"Rede é um conjunto de dispositivos..."</p>
+                <p class="slide-text">...interligados para compartilhamento de recursos, informações e serviços.</p>
+            </div>
+        </section>
+
+        <!-- SLIDE: Curiosidade 1 -->
+        <section class="slide">
+            <div class="sub-header">Mundo Real</div>
+            <h1>O QUE VOCÊ VÊ AQUI?</h1>
+            <div class="glass-card text-center max-w-7xl">
+                <img src="rede2.jpg" alt="Exemplo de Rede 1" class="mx-auto rounded-lg max-h-[550px] object-contain">
+            </div>
+        </section>
+
+        <!-- SLIDE: Curiosidade 2 -->
+        <section class="slide">
+            <div class="sub-header">Mundo Real</div>
+            <h1>E AQUI?</h1>
+            <div class="glass-card text-center max-w-7xl">
+                <img src="rede4.jpg" alt="Exemplo de Rede 2" class="mx-auto rounded-lg max-h-[550px] object-contain">
+            </div>
+        </section>
+
+        <!-- SLIDE: Curiosidade 3 -->
+        <section class="slide">
+            <div class="sub-header">Mundo Real</div>
+            <h1>CONSEGUE IDENTIFICAR?</h1>
+            <div class="glass-card text-center max-w-7xl">
+                <img src="redes1.png" alt="Exemplo de Rede 3" class="mx-auto rounded-lg max-h-[550px] object-contain">
+            </div>
+        </section>
+
+        <!-- SLIDE: Curiosidade 4 -->
+        <section class="slide">
+            <div class="sub-header">Mundo Real</div>
+            <h1>A COMPLEXIDADE</h1>
+            <div class="glass-card text-center max-w-7xl">
+                <img src="redes3.jpg" alt="Exemplo de Rede 4" class="mx-auto rounded-lg max-h-[550px] object-contain">
+            </div>
+        </section>
+
+
+
+
+
+
+
+
+
+
+
+        <!-- SLIDE 13: Atividade Prática -->
+        <section class="slide">
+            <div class="sub-header">Mão na Massa</div>
+            <h1>O QUE VOCÊ ESTÁ VENDO AQUI?</h1>
+            <div class="glass-card text-center max-w-7xl">
+                <!-- Imagem centralizada ocupando maior espaço para análise visual -->
+                <img src="planta_baixa.jpg" alt="Planta Baixa do Escritório"
+                    class="mx-auto rounded-lg max-h-[550px] object-contain">
+            </div>
+        </section>
+
+        <!-- SLIDE 14: Cenário Base e Requisitos -->
+        <section class="slide">
+            <div class="sub-header">Estudo de Caso</div>
+            <h1>OPERAÇÃO SHOPEE: CENÁRIO BASE</h1>
+            <div class="glass-card text-left max-w-6xl">
+                <p class="text-3xl text-gray-300 mb-6">
+                    Instalar um <span class="highlight text-white">Call Center de alta densidade</span> em um galpão de
+                    vão livre com <span class="highlight text-[#00dfd8]">exatamente 200m²</span>, operando em regime de
+                    missão crítica.
+                </p>
+                <p class="text-4xl font-black text-[#00dfd8] mb-4 mt-8">Requisitos de Ocupação (103 posições ativas)</p>
+                <ul class="text-2xl text-gray-300 font-bold space-y-4 ml-8 list-disc">
+                    <li><span class="highlight text-white">85 Posições de Atendimento (PA):</span> Núcleo da operação.
+                    </li>
+                    <li><span class="highlight text-[#00dfd8]">10 Posições de Supervisão/Backoffice:</span>
+                        Administração e monitoramento de qualidade.</li>
+                    <li><span class="highlight text-white">5 Posições de Gerência:</span> Diretoria com necessidade de
+                        privacidade acústica parcial ou total.</li>
+                    <li><span class="highlight text-[#00dfd8]">3 Máquinas de CPD/Monitoramento:</span> Controle e
+                        operação do Data Center Local.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SLIDE 15: Restrição 1 -->
+        <section class="slide">
+            <div class="sub-header">Restrições Técnicas (1/2)</div>
+            <h1>REDE 100% CABEADA & SEM WI-FI</h1>
+            <div class="glass-card text-center max-w-5xl">
+                <div class="bg-black/40 p-8 rounded-2xl border border-red-500/30">
+                    <p class="text-4xl font-black text-white mb-6">🚫 Proibição de Redes Sem Fio</p>
+                    <p class="text-3xl text-gray-300 leading-relaxed">
+                        Para garantir estabilidade máxima do tráfego de voz (VoIP) e sistemas internos, o uso de Wi-Fi
+                        para as estações é estritamente proibido.
+                        <br><br>
+                        <span class="highlight text-red-400">Não haverá tráfego de dados operacionais sem fio.</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 16: Restrição 2 -->
+        <section class="slide">
+            <div class="sub-header">Restrições Técnicas (2/2)</div>
+            <h1>PONTO DE CONVERGÊNCIA ÚNICO</h1>
+            <div class="glass-card text-center max-w-5xl">
+                <div class="bg-black/40 p-8 rounded-2xl border border-[#00dfd8]/30">
+                    <p class="text-4xl font-black text-white mb-6">🎯 103 Pontos para 1 Destino</p>
+                    <p class="text-3xl text-gray-300 leading-relaxed">
+                        Todos os cabos de rede de todas as posições devem convergir fisicamente para uma <span
+                            class="highlight text-[#00dfd8]">única Sala de Telecomunicações</span>.
+                        <br><br>
+                        O Data Center Local (CPD) será o coração exclusivo da operação.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 17: Desafio Projetual -->
+        <section class="slide">
+            <div class="sub-header">Estudo de Caso</div>
+            <h1>O DESAFIO PROJETUAL</h1>
+            <div class="glass-card text-left max-w-7xl">
+                <p class="text-3xl text-[#00dfd8] font-bold mb-8 text-center">
+                    Como é a primeira aula, queremos apenas ativar sua imaginação de engenheiro(a):
+                </p>
+                <div class="grid grid-cols-2 gap-8">
+                    <div>
+                        <p class="text-3xl font-black text-white mb-2">🤔 Onde colocar as mesas?</p>
+                        <p class="text-2xl text-gray-300">Como desenhar o layout para caber as 103 posições sem virar
+                            uma bagunça e deixando espaço para as pessoas andarem?</p>
+                    </div>
+                    <div>
+                        <p class="text-3xl font-black text-white mb-2">🔌 Por onde passam os fios?</p>
+                        <p class="text-2xl text-gray-300">Nenhum computador tem Wi-Fi. Por onde você vai passar mais de
+                            100 cabos de rede sem que as pessoas tropecem neles?</p>
+                    </div>
+                    <div>
+                        <p class="text-3xl font-black text-white mb-2">❄️ Onde fica a Sala do Servidor?</p>
+                        <p class="text-2xl text-gray-300">Onde alocar essa sala (o "coração" da operação) para que os
+                            cabos não fiquem excessivamente longos pelo escritório?</p>
+                    </div>
+                    <div>
+                        <p class="text-3xl font-black text-white mb-2">⚠️ E a organização final?</p>
+                        <p class="text-2xl text-gray-300">Imagina 103 cabos chegando todos juntos na porta da sala do
+                            servidor. Como você faria para não virar um ninho de rato?</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 18: Entregável -->
+        <section class="slide">
+            <div class="sub-header">Resultado da Missão</div>
+            <h1>ENTREGÁVEL ESPERADO</h1>
+            <div class="glass-card text-center max-w-6xl">
+                <p class="text-4xl text-gray-300 font-bold mb-8 leading-relaxed">
+                    A sua equipe deve entregar um <span class="highlight text-[#00dfd8]">croqui unifilar ou planta
+                        baixa</span>, justificando:
+                </p>
+                <ul class="text-3xl text-left text-gray-300 space-y-4 ml-16 list-disc w-3/4 mx-auto">
+                    <li><span class="highlight text-white">O zoneamento</span> das equipes de PA, Gerência e Backoffice.
+                    </li>
+                    <li><span class="highlight text-white">A localização exata</span> do rack e da sala do CPD.</li>
+                    <li><span class="highlight text-white">O traçado físico</span> das rotas de cabeamento principais.
+                    </li>
+                    <li><span class="highlight text-[#00dfd8]">A lógica escolhida</span> por trás do mobiliário.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SLIDE 19: Projeto Final - Logo -->
+        <section class="slide">
+            <div class="sub-header">Projeto Final: Artigo Científico</div>
+            <h1>PROJETO NÔMADE DIGITAL</h1>
+            <div class="glass-card text-center max-w-6xl">
+                <img src="nomad_logo.png" alt="Project NOMAD Logo"
+                    class="w-96 h-96 mx-auto rounded-3xl shadow-[0_0_40px_rgba(0,223,216,0.6)] mb-8">
+                <p class="text-4xl text-[#00dfd8] font-bold">O MUNDO SEM INTERNET</p>
+            </div>
+        </section>
+
+        <!-- SLIDE: O Tema Central -->
+        <section class="slide">
+            <div class="sub-header">Projeto Nômade Digital</div>
+            <h1>O TEMA CENTRAL</h1>
+            <div class="glass-card text-center max-w-6xl">
+                <p class="text-5xl text-gray-300 leading-relaxed font-bold">
+                    "Imagine o mundo sem internet? <br><br>
+                    <span class="highlight text-[#00dfd8]">A Vida de um Nômade Digital em uma Rede Resiliente.</span>"
+                </p>
+            </div>
+        </section>
+
+
+
+
+        <!-- SLIDE: O Objetivo -->
+        <section class="slide">
+            <div class="sub-header">Projeto Nômade Digital</div>
+            <h1>O OBJETIVO</h1>
+            <div class="glass-card text-center max-w-6xl">
+                <p class="text-5xl text-gray-300 leading-relaxed font-bold">
+                    Desenhar uma infraestrutura de comunicação e conhecimento <span
+                        class="highlight text-white">Off-Grid</span>.
+                    <br><br>
+                    <span class="highlight text-red-500 text-4xl">Foco em sobrevivência a apagões e censura.</span>
+                </p>
+            </div>
+        </section>
+
+        <!-- SLIDE: O Formato -->
+        <section class="slide">
+            <div class="sub-header">Projeto Nômade Digital</div>
+            <h1>O FORMATO DA ENTREGA</h1>
+            <div class="glass-card text-center max-w-6xl">
+                <p class="text-5xl text-gray-300 leading-relaxed font-bold">
+                    Produção de Pesquisa Aplicada em Formato de Artigo <span class="highlight text-[#00dfd8]">(em
+                        PDF)</span>.<br><br>
+                    Trabalho <span class="highlight text-white">Exclusivamente em Duplas</span>.
+                    <br><br>
+                    <span class="text-3xl text-gray-400">Teremos 6 Artigos no total. Cada dupla constrói uma "peça"
+                        desse grande quebra-cabeça.</span>
+                </p>
+            </div>
+        </section>
+
+        <!-- SLIDE 20: Tema 1 -->
+        <section class="slide">
+            <div class="sub-header">Temas do Artigo (Sorteio)</div>
+            <h1 class="text-7xl mb-4">1. O CORAÇÃO</h1>
+            <div class="glass-card text-center max-w-7xl">
+                <p class="text-5xl font-black text-[#00dfd8] mb-8">Servidor de Conhecimento Offline</p>
+                <div class="bg-black/40 p-8 rounded-2xl border border-[#00dfd8]/30 text-left">
+                    <p class="text-4xl text-gray-300 leading-relaxed">
+                        <span class="highlight text-white">Foco:</span> Arquitetura de um servidor local (inspirado
+                        no Project NOMAD) para prover DNS, Wikipedia, cursos e mapas sem acesso à WAN.
+                        <br><br>
+                        Como usar um Raspberry Pi ou hardware de baixo custo para isso?
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 21: Tema 2 -->
+        <section class="slide">
+            <div class="sub-header">Temas do Artigo (Sorteio)</div>
+            <h1 class="text-7xl mb-4">2. O MENSAGEIRO</h1>
+            <div class="glass-card text-center max-w-7xl">
+                <p class="text-5xl font-black text-[#00dfd8] mb-8">Comunicação Resiliente</p>
+                <div class="bg-black/40 p-8 rounded-2xl border border-[#00dfd8]/30 text-left">
+                    <p class="text-4xl text-gray-300 leading-relaxed">
+                        <span class="highlight text-white">Foco:</span> Estudo de protocolos <i>offline-first</i>
+                        (como o CMLK) operando sobre LoRa ou rede local.
+                        <br><br>
+                        Como garantir que as mensagens cheguem ao destino mesmo sem um provedor de internet ativo?
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 22: Tema 3 -->
+        <section class="slide">
+            <div class="sub-header">Temas do Artigo (Sorteio)</div>
+            <h1 class="text-7xl mb-4">3. A TEIA</h1>
+            <div class="glass-card text-center max-w-7xl">
+                <p class="text-5xl font-black text-[#00dfd8] mb-8">Redes Mesh e Bitchat</p>
+                <div class="bg-black/40 p-8 rounded-2xl border border-[#00dfd8]/30 text-left">
+                    <p class="text-4xl text-gray-300 leading-relaxed">
+                        <span class="highlight text-white">Foco:</span> Criação de redes em malha (Mesh) via
+                        Bluetooth BLE ou Wi-Fi descentralizado.
+                        <br><br>
+                        O estudo de caso será o app <b>BitChat</b> (que usa BLE e o protocolo Nostr) para comunicação
+                        resistente à censura.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 23: Tema 4 -->
+        <section class="slide">
+            <div class="sub-header">Temas do Artigo (Sorteio)</div>
+            <h1 class="text-7xl mb-4">4. A MEMÓRIA</h1>
+            <div class="glass-card text-center max-w-7xl">
+                <p class="text-5xl font-black text-[#00dfd8] mb-8">Sincronização Assíncrona de Dados</p>
+                <div class="bg-black/40 p-8 rounded-2xl border border-[#00dfd8]/30 text-left">
+                    <p class="text-4xl text-gray-300 leading-relaxed">
+                        <span class="highlight text-white">Foco:</span> Estratégias de <i>store-and-forward</i> para
+                        replicação de arquivos.
+                        <br><br>
+                        Como dados são armazenados nos dispositivos enquanto viajam e sincronizam assim que encontram um
+                        novo nó da rede?
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 24: Tema 5 -->
+        <section class="slide">
+            <div class="sub-header">Temas do Artigo (Sorteio)</div>
+            <h1 class="text-7xl mb-4">5. A ECONOMIA</h1>
+            <div class="glass-card text-center max-w-7xl">
+                <p class="text-5xl font-black text-[#00dfd8] mb-8">Transações Offline</p>
+                <div class="bg-black/40 p-8 rounded-2xl border border-[#00dfd8]/30 text-left">
+                    <p class="text-4xl text-gray-300 leading-relaxed">
+                        <span class="highlight text-white">Foco:</span> Como transferir valor (dinheiro) sem
+                        internet?
+                        <br><br>
+                        Estudo do uso de <i>eCash/Cashu</i> (utilizado no Bitchat) para pagamentos via Bitcoin que são
+                        validados offline e sincronizam depois.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 25: Tema 6 -->
+        <section class="slide">
+            <div class="sub-header">Temas do Artigo (Sorteio)</div>
+            <h1 class="text-7xl mb-4">6. O ORÁCULO</h1>
+            <div class="glass-card text-center max-w-7xl">
+                <p class="text-5xl font-black text-[#00dfd8] mb-8">Agentes de IA Locais e Off-Grid</p>
+                <div class="bg-black/40 p-8 rounded-2xl border border-[#00dfd8]/30 text-left">
+                    <p class="text-4xl text-gray-300 leading-relaxed">
+                        <span class="highlight text-white">Foco:</span> Implantação de Modelos de Linguagem (LLMs)
+                        leves dentro do servidor offline local.
+                        <br><br>
+                        Como auxiliar a comunidade com buscas, agricultura ou saúde sem precisar da AWS ou OpenAI?
+                    </p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SLIDE 10: Boss Final -->
+        <section class="slide">
+            <div class="sub-header"></div>
+
+            <button onclick="window.print()" class="btn-print no-print">Exportar Apresentação em PDF</button>
+        </section>
+
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progress-bar');
+        const deck = document.getElementById('deck');
+        let currentSlide = 0;
+
+        function updateSlide() {
+            deck.style.transform = `translateX(-${currentSlide * 100}vw)`;
+            slides.forEach((s, i) => {
+                s.classList.toggle('active', i === currentSlide);
+            });
+            const progress = ((currentSlide + 1) / slides.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if ((e.key === 'ArrowRight' || e.key === ' ') && currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+            if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        });
+
+        // Touch support para Mobile
+        let touchstartX = 0;
+        let touchendX = 0;
+
+        window.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        });
+
+        window.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            if (touchendX < touchstartX - 50 && currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+            if (touchendX > touchstartX + 50 && currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        });
+
+        updateSlide();
+    </script>
+</body>
+
+</html>
