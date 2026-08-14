@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 02 - Topologias e Arquiteturas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800;900&display=swap');
+
+        :root {
+            --primary: #00d2ff;
+            --secondary: #3a7bd5;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            overflow: hidden;
+            margin: 0;
+            height: 100vh;
+        }
+
+        #progress-bar-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 50;
+        }
+
+        #progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            transition: width 0.4s ease;
+        }
+
+        #deck {
+            position: relative;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+
+        .slide {
+            flex: 0 0 100vw;
+            height: 100vh;
+            padding: 2rem 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            opacity: 0.1;
+            transform: scale(0.95);
+            transition: all 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        h1 {
+            font-size: 6rem;
+            line-height: 1;
+            font-weight: 900;
+            margin-bottom: 2rem;
+            background: linear-gradient(to right, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .sub-header {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            margin-bottom: 1.5rem;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border: 2px solid var(--glass-border);
+            border-radius: 2rem;
+            padding: 3rem;
+            width: 100%;
+            max-width: 1400px;
+        }
+
+        .btn-print {
+            padding: 1rem 2rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+            background: linear-gradient(to right, #00d2ff, #3a7bd5);
+            border: none;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 2rem;
+            position: relative;
+            z-index: 999;
+        }
+
+        @media print {
+            body {
+                background: white;
+                color: black;
+                overflow: visible;
+                height: auto;
+            }
+
+            h1 {
+                background: none;
+                -webkit-text-fill-color: black;
+            }
+
+            #progress-bar-container,
+            .no-print {
+                display: none;
+            }
+
+            #deck {
+                flex-direction: column;
+                transform: none !important;
+                height: auto;
+            }
+
+            .slide {
+                opacity: 1;
+                transform: scale(1);
+                min-height: 100vh;
+                height: auto;
+                page-break-after: always;
+                page-break-inside: avoid;
+                background: white;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                padding: 2cm !important;
+            }
+
+            .glass-card {
+                background: #f9f9f9 !important;
+                border: 2px solid #000 !important;
+                filter: none !important;
+                box-shadow: none !important;
+                page-break-inside: avoid;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                margin: 0 auto;
+            }
+
+            .text-white, .text-gray-300, .text-gray-400, .text-gray-500, .text-cyan-400, .text-blue-400, .text-green-400, .text-yellow-400, .text-purple-400 {
+                color: #000 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="progress-bar-container">
+        <div id="progress-bar"></div>
+    </div>
+
+    <div id="deck">
+        <!-- SLIDE 1: ABERTURA -->
+        <section class="slide active">
+            <div class="sub-header">Aula 02</div>
+            <h1>A ARQUITETURA<br>DAS REDES</h1>
+            <p class="text-4xl text-gray-400 mt-8 font-bold">Topologias, Tipos e Estruturas Lógicas</p>
+        </section>
+
+        <!-- SLIDE 1.5: DEFINIÇÃO DE REDE -->
+        <section class="slide">
+            <div class="sub-header">Conceito Fundamental</div>
+            <h1 style="font-size: 5rem; color: #a855f7; -webkit-text-fill-color: #a855f7;">O QUE É UMA REDE?</h1>
+            <div class="glass-card mt-12 max-w-6xl p-12">
+                <p class="text-6xl text-white font-bold mb-8 leading-tight">
+                    "Rede é um conjunto de dispositivos..."
+                </p>
+                <p class="text-5xl text-gray-300 leading-relaxed italic">
+                    ...interligados para compartilhamento de <strong class="text-purple-400">recursos</strong>, <strong class="text-purple-400">informações</strong> e <strong class="text-purple-400">serviços</strong>.
+                </p>
+            </div>
+        </section>
+
+        <!-- SLIDE 1.6: CITAÇÃO ACADÊMICA -->
+        <section class="slide">
+            <div class="sub-header">Definição Acadêmica</div>
+            <h1 style="font-size: 5rem; color: #fbbf24; -webkit-text-fill-color: #fbbf24;">A VISÃO DOS AUTORES</h1>
+            <div class="glass-card mt-12 max-w-7xl p-16 text-left relative border-amber-500" style="border-width: 4px;">
+                <div class="text-[120px] absolute -top-12 -left-4 text-amber-500 opacity-40">"</div>
+                <p class="text-[50px] text-white font-medium leading-tight z-10 relative indent-12">
+                    Uma rede de computadores é um sistema de interconexão de computadores autônomos, através de meios físicos e protocolos, com o objetivo de compartilhar informações e recursos.
+                </p>
+                <p class="text-3xl text-gray-400 mt-12 text-right border-t border-amber-500/30 pt-6 font-bold uppercase tracking-wider">
+                    — Jeanine dos S. Barreto et al.<br>
+                    <span class="text-2xl text-gray-500 font-normal mt-2 inline-block">Fundamentos de Redes de Computadores. Grupo A - Minha Biblioteca, 2018</span>
+                </p>
+            </div>
+        </section>
+
+        <!-- SLIDE 2: OBJETIVOS -->
+        <section class="slide">
+            <div class="sub-header">Nossa Missão Hoje</div>
+            <h1 style="font-size: 5rem; background: linear-gradient(to right, #ff0055, #ffaa00); -webkit-background-clip: text;">MAPEAR O INVISÍVEL</h1>
+            <div class="glass-card mt-8">
+                <ul class="text-4xl text-left text-gray-300 space-y-6 list-disc list-inside">
+                    <li>Identificar o Hardware: Hub, Switch, Roteador e Servidores.</li>
+                    <li>Diferenciar LAN, WAN, MAN e PAN.</li>
+                    <li>Entender os modelos <strong>Cliente-Servidor</strong> e <strong>Ponto a Ponto</strong>.</li>
+                    <li>Desenhar Topologias Físicas e Lógicas.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SLIDE HARDWARE 1: HUB -->
+        <section class="slide">
+            <div class="sub-header">O Equipamento Base</div>
+            <h1 style="font-size: 5rem; color: #ef4444; -webkit-text-fill-color: #ef4444;">🛑 HUB (Concentrador)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-red-500" style="border-width: 4px;">
+                <img src="assets/hub.jpg" class="h-80 w-auto rounded-xl object-cover border-2 border-red-500 shadow-[0_0_50px_rgba(239,68,68,0.5)]">
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">O Repetidor Cego</p>
+                    <p class="text-4xl text-gray-300 leading-tight">O equipamento mais básico. Ele recebe a informação e simplesmente "grita" para todos (Broadcast). Gera tráfego inútil e colisões. Obsoleto hoje em dia.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE HARDWARE 2: SWITCH -->
+        <section class="slide">
+            <div class="sub-header">O Equipamento Base</div>
+            <h1 style="font-size: 5rem; color: #22d3ee; -webkit-text-fill-color: #22d3ee;">🧠 SWITCH (Comutador)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-cyan-400" style="border-width: 4px;">
+                <img src="assets/switch.jpg" class="h-80 w-auto rounded-xl object-cover border-2 border-cyan-400 shadow-[0_0_50px_rgba(34,211,238,0.5)]">
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">O Entregador Direto</p>
+                    <p class="text-4xl text-gray-300 leading-tight">Inteligente! Aprende o endereço de hardware (MAC) de cada PC e manda os dados direto para o destino exato. Base das LANs modernas.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE HARDWARE 3: ROTEADOR -->
+        <section class="slide">
+            <div class="sub-header">O Equipamento Base</div>
+            <h1 style="font-size: 5rem; color: #4ade80; -webkit-text-fill-color: #4ade80;">🌍 ROTEADOR (Router)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-green-400" style="border-width: 4px;">
+                <img src="assets/router.jpg" class="h-80 w-auto rounded-xl object-cover border-2 border-green-400 shadow-[0_0_50px_rgba(74,222,128,0.5)]">
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">O Mestre das Rotas</p>
+                    <p class="text-4xl text-gray-300 leading-tight">Interliga redes diferentes (sua casa com a Internet). Ele traça a melhor rota para o pacote chegar ao destino via IP.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE HARDWARE 4: SERVIDOR -->
+        <section class="slide">
+            <div class="sub-header">O Equipamento Base</div>
+            <h1 style="font-size: 5rem; color: #c084fc; -webkit-text-fill-color: #c084fc;">🖥️ SERVIDOR (Server)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-purple-400" style="border-width: 4px;">
+                <img src="assets/server.jpg" class="h-80 w-auto rounded-xl object-cover border-2 border-purple-400 shadow-[0_0_50px_rgba(192,132,252,0.5)]">
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">O Provedor de Recursos</p>
+                    <p class="text-4xl text-gray-300 leading-tight">Máquina potente que "serve" recursos centralizados: páginas Web, e-mails, arquivos e o serviço de distribuição de IPs (DHCP).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE HARDWARE 5: ACCESS POINT / WI-FI -->
+        <section class="slide">
+            <div class="sub-header">O Equipamento Base</div>
+            <h1 style="font-size: 5rem; color: #f97316; -webkit-text-fill-color: #f97316;">📡 ACCESS POINT (Wi-Fi)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-orange-500" style="border-width: 4px;">
+                <div class="flex-shrink-0 h-80 w-80 rounded-xl border-2 border-orange-500 shadow-[0_0_50px_rgba(249,115,22,0.5)] flex flex-col items-center justify-center" style="background: rgba(0,0,0,0.5);">
+                    <div class="text-[120px] mb-4 text-orange-500 animate-pulse">📡</div>
+                    <p class="text-orange-500 font-bold text-3xl tracking-widest uppercase">Sem Fio</p>
+                </div>
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">A Ponte Invisível</p>
+                    <p class="text-4xl text-gray-300 leading-tight">O Ponto de Acesso (AP) converte o sinal da rede cabeada em ondas de rádio (Wi-Fi). Ele permite que dezenas de dispositivos móveis se conectem à rede local simultaneamente, sem a necessidade de cabos.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE HARDWARE 6: FIREWALL -->
+        <section class="slide">
+            <div class="sub-header">O Equipamento Base</div>
+            <h1 style="font-size: 5rem; color: #dc2626; -webkit-text-fill-color: #dc2626;">🧱 FIREWALL (Segurança)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-red-600" style="border-width: 4px;">
+                <div class="flex-shrink-0 h-80 w-80 rounded-xl border-2 border-red-600 shadow-[0_0_50px_rgba(220,38,38,0.5)] flex flex-col items-center justify-center" style="background: rgba(0,0,0,0.5);">
+                    <div class="text-[120px] mb-4 text-red-600">🛡️</div>
+                    <p class="text-red-600 font-bold text-3xl tracking-widest uppercase">Guardião</p>
+                </div>
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">A Muralha de Proteção</p>
+                    <p class="text-4xl text-gray-300 leading-tight">Equipamento (ou software) responsável por filtrar o que entra e o que sai da rede. Ele bloqueia acessos não autorizados e protege os dispositivos internos contra ataques cibernéticos externos.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE HARDWARE 7: DISPOSITIVOS FINAIS -->
+        <section class="slide">
+            <div class="sub-header">O Equipamento Base</div>
+            <h1 style="font-size: 5rem; color: #10b981; -webkit-text-fill-color: #10b981;">💻 DISPOSITIVOS FINAIS (Hosts)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-emerald-500" style="border-width: 4px;">
+                <div class="flex-shrink-0 h-80 w-80 rounded-xl border-2 border-emerald-500 shadow-[0_0_50px_rgba(16,185,129,0.5)] flex flex-col items-center justify-center" style="background: rgba(0,0,0,0.5);">
+                    <div class="text-[80px] mb-4 text-emerald-500 flex flex-wrap justify-center gap-2">
+                        <span>💻</span><span>📱</span><span>📷</span><span>📺</span>
+                    </div>
+                    <p class="text-emerald-500 font-bold text-3xl tracking-widest uppercase">End Devices</p>
+                </div>
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">A Razão da Rede Existir</p>
+                    <p class="text-4xl text-gray-300 leading-tight">São os equipamentos utilizados diretamente pelos usuários ou que geram dados para a rede. Inclui Computadores (Desktop), Notebooks, Celulares e Câmeras de Segurança IP. Eles são o destino e a origem de todo o tráfego.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE HOST 1: COMPUTADOR -->
+        <section class="slide">
+            <div class="sub-header">Dispositivos Finais</div>
+            <h1 style="font-size: 5rem; color: #2dd4bf; -webkit-text-fill-color: #2dd4bf;">🖥️ COMPUTADOR (Desktop)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-teal-400" style="border-width: 4px;">
+                <div class="flex-shrink-0 h-80 w-80 rounded-xl border-2 border-teal-400 shadow-[0_0_50px_rgba(45,212,191,0.5)] flex flex-col items-center justify-center" style="background: rgba(0,0,0,0.5);">
+                    <div class="text-[120px] mb-4 text-teal-400">🖥️</div>
+                    <p class="text-teal-400 font-bold text-3xl tracking-widest uppercase">Estação</p>
+                </div>
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">A Força de Trabalho</p>
+                    <p class="text-4xl text-gray-300 leading-tight">As estações de trabalho tradicionais. Costumam estar ligadas à rede via cabo (Ethernet) para garantir a máxima estabilidade, segurança e performance, especialmente em ambientes corporativos e laboratórios.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE HOST 2: NOTEBOOK -->
+        <section class="slide">
+            <div class="sub-header">Dispositivos Finais</div>
+            <h1 style="font-size: 5rem; color: #818cf8; -webkit-text-fill-color: #818cf8;">💻 NOTEBOOK (Laptop)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-indigo-400" style="border-width: 4px;">
+                <div class="flex-shrink-0 h-80 w-80 rounded-xl border-2 border-indigo-400 shadow-[0_0_50px_rgba(129,140,248,0.5)] flex flex-col items-center justify-center" style="background: rgba(0,0,0,0.5);">
+                    <div class="text-[120px] mb-4 text-indigo-400">💻</div>
+                    <p class="text-indigo-400 font-bold text-3xl tracking-widest uppercase">Mobilidade</p>
+                </div>
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">O Poder Portátil</p>
+                    <p class="text-4xl text-gray-300 leading-tight">Trazem o poder de processamento do Desktop, mas com foco total na mobilidade. Conectam-se predominantemente via Wi-Fi nas empresas modernas e ditam as novas regras de espaços de trabalho dinâmicos.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE HOST 3: CELULAR -->
+        <section class="slide">
+            <div class="sub-header">Dispositivos Finais</div>
+            <h1 style="font-size: 5rem; color: #f472b6; -webkit-text-fill-color: #f472b6;">📱 CELULAR (Smartphone)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-pink-400" style="border-width: 4px;">
+                <div class="flex-shrink-0 h-80 w-80 rounded-xl border-2 border-pink-400 shadow-[0_0_50px_rgba(244,114,182,0.5)] flex flex-col items-center justify-center" style="background: rgba(0,0,0,0.5);">
+                    <div class="text-[120px] mb-4 text-pink-400">📱</div>
+                    <p class="text-pink-400 font-bold text-3xl tracking-widest uppercase">Ubíquo</p>
+                </div>
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">A Maioria Esmagadora</p>
+                    <p class="text-4xl text-gray-300 leading-tight">O dispositivo final mais numeroso do mundo. Eles sobrecarregam as redes sem fio com um intenso consumo de banda (redes sociais e vídeos), exigindo infraestruturas Wi-Fi extremamente robustas.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE HOST 4: CAMERA IP -->
+        <section class="slide">
+            <div class="sub-header">Dispositivos Finais</div>
+            <h1 style="font-size: 5rem; color: #a3e635; -webkit-text-fill-color: #a3e635;">📷 CÂMERA DE SEGURANÇA (IP)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-lime-400" style="border-width: 4px;">
+                <div class="flex-shrink-0 h-80 w-80 rounded-xl border-2 border-lime-400 shadow-[0_0_50px_rgba(163,230,53,0.5)] flex flex-col items-center justify-center" style="background: rgba(0,0,0,0.5);">
+                    <div class="text-[120px] mb-4 text-lime-400 animate-pulse">📷</div>
+                    <p class="text-lime-400 font-bold text-3xl tracking-widest uppercase">Uplink</p>
+                </div>
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">O Olho da Rede</p>
+                    <p class="text-4xl text-gray-300 leading-tight">Diferente de um celular que consome dados, a Câmera IP gera tráfego enviando um fluxo pesado e ininterrupto de vídeo (uplink). Devido ao peso do streaming, elas frequentemente exigem redes isoladas (VLANs).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE ECOSSISTEMA COMPLETO -->
+        <section class="slide">
+            <div class="sub-header">Resumo Visual</div>
+            <h1 style="font-size: 5rem; color: #38bdf8; -webkit-text-fill-color: #38bdf8;">O ECOSSISTEMA COMPLETO</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex items-center justify-center border-sky-400 p-4" style="border-width: 4px; background: rgba(0,0,0,0.3);">
+                <img src="assets/all_devices.jpg" class="h-[70vh] w-auto rounded-xl object-contain shadow-[0_0_50px_rgba(56,189,248,0.5)]">
+            </div>
+        </section>
+
+        <!-- SLIDE CLASSIFICAÇÃO 1: PAN -->
+        <section class="slide">
+            <div class="sub-header">Classificação Geográfica</div>
+            <h1 style="font-size: 5rem; color: #22d3ee; -webkit-text-fill-color: #22d3ee;">PAN (Personal Area Network)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-cyan-400" style="border-width: 4px;">
+                <img src="assets/pan.jpg" class="h-80 w-auto rounded-xl object-cover border-2 border-cyan-400 shadow-[0_0_50px_rgba(34,211,238,0.5)]">
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">A Rede Pessoal</p>
+                    <p class="text-4xl text-gray-300 leading-tight">Redes de curtíssimo alcance. Utilizada para comunicação entre dispositivos pessoais ao redor de um indivíduo, como Bluetooth, fones de ouvido e Wearables (Smartwatches).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE CLASSIFICAÇÃO 2: LAN -->
+        <section class="slide">
+            <div class="sub-header">Classificação Geográfica</div>
+            <h1 style="font-size: 5rem; color: #4ade80; -webkit-text-fill-color: #4ade80;">LAN (Local Area Network)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-green-400" style="border-width: 4px;">
+                <img src="assets/lan.jpg" class="h-80 w-auto rounded-xl object-cover border-2 border-green-400 shadow-[0_0_50px_rgba(74,222,128,0.5)]">
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">A Rede Local</p>
+                    <p class="text-4xl text-gray-300 leading-tight">A infraestrutura base das empresas, salas de aula e residências. Abrange distâncias curtas (como um prédio ou andar) unindo computadores para compartilhamento rápido e local de recursos.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE CLASSIFICAÇÃO 2.5: LAN NA PRÁTICA -->
+        <section class="slide">
+            <div class="sub-header">Exemplos de LAN</div>
+            <h1 style="font-size: 5rem; color: #4ade80; -webkit-text-fill-color: #4ade80;">LAN NA PRÁTICA</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col gap-10 text-left border-green-400 p-16" style="border-width: 4px;">
+                <div class="bg-black/30 p-8 rounded-xl border border-green-400/50 shadow-[0_0_20px_rgba(74,222,128,0.2)]">
+                    <p class="text-5xl text-white font-bold mb-6 flex items-center gap-4">🏠 Uso Residencial</p>
+                    <p class="text-[40px] text-gray-300 leading-tight">A rede Wi-Fi da sua casa, conectando seu notebook, smartphone e impressora.</p>
+                </div>
+                <div class="bg-black/30 p-8 rounded-xl border border-green-400/50 shadow-[0_0_20px_rgba(74,222,128,0.2)]">
+                    <p class="text-5xl text-white font-bold mb-6 flex items-center gap-4">🏢 Uso Empresarial</p>
+                    <p class="text-[40px] text-gray-300 leading-tight">A rede de computadores em um escritório ou em um andar de um prédio.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE CLASSIFICAÇÃO 3: MAN -->
+        <section class="slide">
+            <div class="sub-header">Classificação Geográfica</div>
+            <h1 style="font-size: 5rem; color: #facc15; -webkit-text-fill-color: #facc15;">MAN (Metropolitan Area Network)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-yellow-400" style="border-width: 4px;">
+                <img src="assets/man.jpg" class="h-80 w-auto rounded-xl object-cover border-2 border-yellow-400 shadow-[0_0_50px_rgba(250,204,21,0.5)]">
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">A Rede Metropolitana</p>
+                    <p class="text-4xl text-gray-300 leading-tight">Interliga diversas LANs dentro do perímetro de uma cidade, campus universitário gigante ou região metropolitana. Geralmente construída com anéis de fibra óptica.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE CLASSIFICAÇÃO 3.5: MAN NA PRÁTICA -->
+        <section class="slide">
+            <div class="sub-header">Exemplos de MAN</div>
+            <h1 style="font-size: 5rem; color: #facc15; -webkit-text-fill-color: #facc15;">MAN NA PRÁTICA</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col gap-10 text-left border-yellow-400 p-16" style="border-width: 4px;">
+                <div class="bg-black/30 p-8 rounded-xl border border-yellow-400/50 shadow-[0_0_20px_rgba(250,204,21,0.2)]">
+                    <p class="text-5xl text-white font-bold mb-6 flex items-center gap-4">🏙️ Provedores de Bairro (ISPs)</p>
+                    <p class="text-[40px] text-gray-300 leading-tight">O provedor local que espalha fibra óptica pelos postes para conectar centenas de clientes de um bairro ou cidade inteira.</p>
+                </div>
+                <div class="bg-black/30 p-8 rounded-xl border border-yellow-400/50 shadow-[0_0_20px_rgba(250,204,21,0.2)]">
+                    <p class="text-5xl text-white font-bold mb-6 flex items-center gap-4">🏢 Interligação de Filiais</p>
+                    <p class="text-[40px] text-gray-300 leading-tight">Uma grande empresa que paga um link de fibra dedicado para ligar a matriz (no centro) à sua filial (em outro bairro) como se fosse uma só rede.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE CLASSIFICAÇÃO 4: WAN -->
+        <section class="slide">
+            <div class="sub-header">Classificação Geográfica</div>
+            <h1 style="font-size: 5rem; color: #c084fc; -webkit-text-fill-color: #c084fc;">WAN (Wide Area Network)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-purple-400" style="border-width: 4px;">
+                <img src="assets/wan.jpg" class="h-80 w-auto rounded-xl object-cover border-2 border-purple-400 shadow-[0_0_50px_rgba(192,132,252,0.5)]">
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">A Conexão Global</p>
+                    <p class="text-4xl text-gray-300 leading-tight">Redes de longa distância (países e continentes). A Internet é o maior exemplo de WAN do mundo. Ela une todas as outras redes através de cabos submarinos e satélites.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE CLASSIFICAÇÃO 4.5: WAN NA PRÁTICA -->
+        <section class="slide">
+            <div class="sub-header">Exemplos de WAN</div>
+            <h1 style="font-size: 5rem; color: #c084fc; -webkit-text-fill-color: #c084fc;">WAN NA PRÁTICA</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col gap-10 text-left border-purple-400 p-16" style="border-width: 4px;">
+                <div class="bg-black/30 p-8 rounded-xl border border-purple-400/50 shadow-[0_0_20px_rgba(192,132,252,0.2)]">
+                    <p class="text-5xl text-white font-bold mb-6 flex items-center gap-4">🌐 A Própria Internet</p>
+                    <p class="text-[40px] text-gray-300 leading-tight">A maior WAN pública do mundo. Ela une todas as redes locais do planeta (a rede da sua casa e os servidores da Netflix) através de uma teia gigantesca de cabos submarinos.</p>
+                </div>
+                <div class="bg-black/30 p-8 rounded-xl border border-purple-400/50 shadow-[0_0_20px_rgba(192,132,252,0.2)]">
+                    <p class="text-5xl text-white font-bold mb-6 flex items-center gap-4">📡 Conexões via Satélite (Starlink)</p>
+                    <p class="text-[40px] text-gray-300 leading-tight">Uma infraestrutura de WAN espacial que cobre distâncias massivas conectando locais extremamente isolados e fazendas ao backbone global de dados.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE CLASSIFICAÇÃO 5: SAN -->
+        <section class="slide">
+            <div class="sub-header">Redes de Propósito Específico</div>
+            <h1 style="font-size: 5rem; color: #f97316; -webkit-text-fill-color: #f97316;">SAN (Storage Area Network)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-orange-500" style="border-width: 4px;">
+                <img src="assets/san.jpg" class="h-80 w-auto rounded-xl object-cover border-2 border-orange-500 shadow-[0_0_50px_rgba(249,115,22,0.5)]">
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">A Rede de Armazenamento</p>
+                    <p class="text-4xl text-gray-300 leading-tight">Uma rede isolada e dedicada exclusivamente para armazenar dados e fazer a comunicação em altíssima velocidade entre os servidores de processamento e os discos de armazenamento.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE CLASSIFICAÇÃO 5.5: SAN NA PRÁTICA -->
+        <section class="slide">
+            <div class="sub-header">Exemplos de SAN</div>
+            <h1 style="font-size: 5rem; color: #f97316; -webkit-text-fill-color: #f97316;">SAN NA PRÁTICA</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col gap-10 text-left border-orange-500 p-16" style="border-width: 4px;">
+                <div class="bg-black/30 p-8 rounded-xl border border-orange-500/50 shadow-[0_0_20px_rgba(249,115,22,0.2)]">
+                    <p class="text-5xl text-white font-bold mb-6 flex items-center gap-4">🎬 Estúdio de Vídeo</p>
+                    <p class="text-[40px] text-gray-300 leading-tight">Vários computadores de edição super potentes acessando simultaneamente os mesmos arquivos de vídeo bruto de um servidor central, sem travar a rede da empresa.</p>
+                </div>
+                <div class="bg-black/30 p-8 rounded-xl border border-orange-500/50 shadow-[0_0_20px_rgba(249,115,22,0.2)]">
+                    <p class="text-5xl text-white font-bold mb-6 flex items-center gap-4">🏥 Bancos e Hospitais</p>
+                    <p class="text-[40px] text-gray-300 leading-tight">Bancos de dados gigantes (históricos de pacientes ou transações financeiras) guardados em data centers conectados via fibra óptica puramente para armazenamento.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE CLASSIFICAÇÃO 6: VLAN -->
+        <section class="slide">
+            <div class="sub-header">Redes Virtuais</div>
+            <h1 style="font-size: 5rem; color: #2dd4bf; -webkit-text-fill-color: #2dd4bf;">VLAN (Virtual LAN)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col gap-8 text-left border-teal-400 p-12" style="border-width: 4px;">
+                <div class="flex items-center gap-12">
+                    <!-- CSS Diagram of VLAN -->
+                    <div class="flex-shrink-0 w-1/2 bg-black/40 p-8 rounded-xl border-2 border-teal-400/30 flex flex-col items-center justify-center gap-10 shadow-[0_0_30px_rgba(45,212,191,0.2)]">
+                        <!-- Computers Top -->
+                        <div class="flex w-full justify-around px-2 gap-4">
+                            <div class="flex flex-col items-center p-3 border-2 border-blue-500/50 bg-blue-500/10 rounded-lg w-28">
+                                <div class="text-5xl mb-2">💻</div>
+                                <span class="text-blue-400 font-bold text-lg">VLAN 10</span>
+                            </div>
+                            <div class="flex flex-col items-center p-3 border-2 border-green-500/50 bg-green-500/10 rounded-lg w-28">
+                                <div class="text-5xl mb-2">💻</div>
+                                <span class="text-green-400 font-bold text-lg">VLAN 20</span>
+                            </div>
+                            <div class="flex flex-col items-center p-3 border-2 border-yellow-400/50 bg-yellow-400/10 rounded-lg w-28">
+                                <div class="text-5xl mb-2">💻</div>
+                                <span class="text-yellow-400 font-bold text-lg">VLAN 30</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Switch -->
+                        <div class="w-full max-w-[450px] h-20 bg-gray-800 border-2 border-gray-600 rounded-lg flex items-center justify-evenly px-4 shadow-[0_0_20px_rgba(255,255,255,0.1)] relative">
+                            <div class="absolute -top-4 left-1/2 -translate-x-1/2 text-gray-400 text-sm font-bold tracking-widest">SWITCH FÍSICO ÚNICO</div>
+                            <div class="w-6 h-6 rounded bg-blue-500 shadow-[0_0_15px_#3b82f6] animate-pulse"></div>
+                            <div class="w-6 h-6 rounded bg-blue-500 shadow-[0_0_15px_#3b82f6] animate-pulse"></div>
+                            <div class="w-6 h-6 rounded bg-green-500 shadow-[0_0_15px_#22c55e] animate-pulse" style="animation-delay: 0.2s;"></div>
+                            <div class="w-6 h-6 rounded bg-green-500 shadow-[0_0_15px_#22c55e] animate-pulse" style="animation-delay: 0.2s;"></div>
+                            <div class="w-6 h-6 rounded bg-yellow-400 shadow-[0_0_15px_#facc15] animate-pulse" style="animation-delay: 0.4s;"></div>
+                            <div class="w-6 h-6 rounded bg-yellow-400 shadow-[0_0_15px_#facc15] animate-pulse" style="animation-delay: 0.4s;"></div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p class="text-5xl text-white font-bold mb-6">A Divisão Lógica</p>
+                        <p class="text-4xl text-gray-300 leading-tight">Reúne diversas máquinas de forma <span class="text-teal-400 font-bold">LÓGICA</span> e não física. Permite fatiar um único switch em várias redes independentes e isoladas, como se fossem equipamentos separados.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE CLASSIFICAÇÃO 6.5: VLAN NA PRÁTICA -->
+        <section class="slide">
+            <div class="sub-header">Exemplos de VLAN</div>
+            <h1 style="font-size: 5rem; color: #2dd4bf; -webkit-text-fill-color: #2dd4bf;">VLAN NA PRÁTICA</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col gap-10 text-left border-teal-400 p-16" style="border-width: 4px;">
+                <div class="bg-black/30 p-8 rounded-xl border border-teal-400/50 shadow-[0_0_20px_rgba(45,212,191,0.2)]">
+                    <p class="text-5xl text-white font-bold mb-6 flex items-center gap-4">🏢 Separação de Departamentos</p>
+                    <p class="text-[40px] text-gray-300 leading-tight">Separar a rede do setor Financeiro da rede do Marketing. Um não enxerga os computadores e dados do outro, mesmo estando plugados no mesmo switch físico.</p>
+                </div>
+                <div class="bg-black/30 p-8 rounded-xl border border-teal-400/50 shadow-[0_0_20px_rgba(45,212,191,0.2)]">
+                    <p class="text-5xl text-white font-bold mb-6 flex items-center gap-4">🤝 Rede para Convidados (Guest)</p>
+                    <p class="text-[40px] text-gray-300 leading-tight">Criar um Wi-Fi exclusivo para visitantes na empresa. Essa rede dá acesso à internet, mas fica virtualmente isolada dos servidores e arquivos internos, garantindo segurança total.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE ARQUITETURA 1: P2P -->
+        <section class="slide">
+            <div class="sub-header">Arquiteturas</div>
+            <h1 style="font-size: 5rem; color: #3b82f6; -webkit-text-fill-color: #3b82f6;">PONTO A PONTO</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-blue-500" style="border-width: 4px;">
+                <img src="assets/p2p.jpg" class="h-80 w-auto rounded-xl object-cover border-2 border-blue-500 shadow-[0_0_50px_rgba(59,130,246,0.5)]">
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">Todos São Iguais</p>
+                    <p class="text-4xl text-gray-300 leading-tight">Não há um chefe central na rede. Todos fornecem e consomem recursos. É muito fácil e barato de montar, mas vira um caos absoluto para administrar caso a rede cresça demais.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE ARQUITETURA 1.1: P2P EXEMPLO -->
+        <section class="slide">
+            <div class="sub-header">Arquiteturas: Exemplo Prático</div>
+            <h1 style="font-size: 5rem; color: #60a5fa; -webkit-text-fill-color: #60a5fa;">Na Prática: P2P</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-blue-400" style="border-width: 4px;">
+                <div class="flex-shrink-0 h-80 w-80 rounded-xl border-2 border-blue-400 shadow-[0_0_50px_rgba(96,165,250,0.5)] flex flex-col items-center justify-center" style="background: rgba(0,0,0,0.5);">
+                    <div class="text-[120px] mb-4 text-blue-400">🖨️</div>
+                    <p class="text-blue-400 font-bold text-3xl tracking-widest uppercase">Workgroup</p>
+                </div>
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">O Escritório sem Servidor</p>
+                    <p class="text-4xl text-gray-300 leading-tight">Imagine um escritório pequeno. A secretária compartilha a impressora USB na rede. O financeiro compartilha uma pasta. <strong>Se a secretária for embora e desligar o PC, ninguém mais imprime.</strong> Cada um cuida da sua própria senha e segurança local.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE ARQUITETURA 2: CLIENTE-SERVIDOR -->
+        <section class="slide">
+            <div class="sub-header">Arquiteturas</div>
+            <h1 style="font-size: 5rem; color: #ef4444; -webkit-text-fill-color: #ef4444;">CLIENTE-SERVIDOR</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-red-500" style="border-width: 4px;">
+                <img src="assets/cs.jpg" class="h-80 w-auto rounded-xl object-cover border-2 border-red-500 shadow-[0_0_50px_rgba(239,68,68,0.5)]">
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">O Controle Centralizado</p>
+                    <p class="text-4xl text-gray-300 leading-tight">Um chefe (Servidor) controla todos os recursos. É altamente seguro, organizado e escalável. O único problema: se o servidor cair, ninguém acessa os dados.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE ARQUITETURA 2.1: CS EXEMPLO -->
+        <section class="slide">
+            <div class="sub-header">Arquiteturas: Exemplos Práticos</div>
+            <h1 style="font-size: 5rem; color: #f87171; -webkit-text-fill-color: #f87171;">Na Prática: Cliente-Servidor</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-red-400" style="border-width: 4px;">
+                <div class="flex-shrink-0 h-80 w-80 rounded-xl border-2 border-red-400 shadow-[0_0_50px_rgba(248,113,113,0.5)] flex flex-col items-center justify-center" style="background: rgba(0,0,0,0.5);">
+                    <div class="text-[120px] mb-4 text-red-400">🏦</div>
+                    <p class="text-red-400 font-bold text-3xl tracking-widest uppercase">Centralizado</p>
+                </div>
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">Bancos e Streaming</p>
+                    <p class="text-3xl text-gray-300 leading-snug">
+                        • <strong>Caixa Eletrônico:</strong> A máquina (Cliente) pergunta se você tem saldo. O Servidor Central aprova e manda a ordem pra soltar a nota.<br><br>
+                        • <strong>Netflix:</strong> A sua Smart TV (Cliente) pede um filme. Os Datacenters (Servidores) calculam a qualidade e entregam o vídeo.<br><br>
+                        <strong>Se o Servidor do Banco cair, nenhum caixa eletrônico do país saca um único centavo. A inteligência nunca está no Cliente!</strong>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE TOPOLOGIA 1: ESTRELA -->
+        <section class="slide">
+            <div class="sub-header">Topologias Físicas</div>
+            <h1 style="font-size: 5rem; color: #22d3ee; -webkit-text-fill-color: #22d3ee;">⭐ ESTRELA (Star)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-cyan-400" style="border-width: 4px;">
+                <img src="assets/star.jpg" class="h-80 w-auto rounded-xl object-cover border-2 border-cyan-400 shadow-[0_0_50px_rgba(34,211,238,0.5)]">
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">O Ponto Central</p>
+                    <p class="text-4xl text-gray-300 leading-tight">Todos os dispositivos são conectados a um centralizador (Switch). Vantagem: se um cabo quebrar, apenas aquela máquina cai. Desvantagem: se o Switch queimar, a rede inteira para.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE TOPOLOGIA 2: ANEL -->
+        <section class="slide">
+            <div class="sub-header">Topologias Físicas</div>
+            <h1 style="font-size: 5rem; color: #c084fc; -webkit-text-fill-color: #c084fc;">🔄 ANEL (Ring)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-purple-400" style="border-width: 4px;">
+                <img src="assets/ring.jpg" class="h-80 w-auto rounded-xl object-cover border-2 border-purple-400 shadow-[0_0_50px_rgba(192,132,252,0.5)]">
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">O Círculo Fechado</p>
+                    <p class="text-4xl text-gray-300 leading-tight">Os dados trafegam em círculo (Token Ring). Quase não há colisões, mas é perigoso: se um nó ou cabo falhar no meio do caminho, a rede inteira pode ser interrompida.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE TOPOLOGIA 3: BARRAMENTO -->
+        <section class="slide">
+            <div class="sub-header">Topologias Físicas</div>
+            <h1 style="font-size: 5rem; color: #facc15; -webkit-text-fill-color: #facc15;">➖ BARRAMENTO (Bus)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-yellow-400" style="border-width: 4px;">
+                <div class="flex-shrink-0 h-80 w-80 rounded-xl border-2 border-yellow-400 shadow-[0_0_50px_rgba(250,204,21,0.5)] flex items-center justify-center relative overflow-hidden" style="background: rgba(0,0,0,0.5);">
+                    <!-- Linha do Backbone Central -->
+                    <div class="absolute w-full h-4 bg-yellow-400 shadow-[0_0_20px_#facc15] top-1/2 transform -translate-y-1/2 z-10"></div>
+                    
+                    <!-- Terminações do Backbone -->
+                    <div class="absolute left-2 w-4 h-12 bg-gray-500 top-1/2 transform -translate-y-1/2 z-20 rounded-sm border-2 border-gray-400"></div>
+                    <div class="absolute right-2 w-4 h-12 bg-gray-500 top-1/2 transform -translate-y-1/2 z-20 rounded-sm border-2 border-gray-400"></div>
+                    
+                    <!-- Nó Superior Esquerdo -->
+                    <div class="absolute top-8 left-12 flex flex-col items-center z-20">
+                        <div class="text-5xl text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">💻</div>
+                        <div class="w-2 h-14 bg-yellow-400 mt-1 shadow-[0_0_10px_#facc15]"></div>
+                    </div>
+
+                    <!-- Nó Superior Direito -->
+                    <div class="absolute top-8 right-12 flex flex-col items-center z-20">
+                        <div class="text-5xl text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">💻</div>
+                        <div class="w-2 h-14 bg-yellow-400 mt-1 shadow-[0_0_10px_#facc15]"></div>
+                    </div>
+
+                    <!-- Nó Inferior Esquerdo -->
+                    <div class="absolute bottom-8 left-24 flex flex-col items-center z-20">
+                        <div class="w-2 h-14 bg-yellow-400 mb-1 shadow-[0_0_10px_#facc15]"></div>
+                        <div class="text-5xl text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">💻</div>
+                    </div>
+
+                    <!-- Nó Inferior Direito -->
+                    <div class="absolute bottom-8 right-24 flex flex-col items-center z-20">
+                        <div class="w-2 h-14 bg-yellow-400 mb-1 shadow-[0_0_10px_#facc15]"></div>
+                        <div class="text-5xl text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">🖨️</div>
+                    </div>
+
+                    <!-- Data animada passando pelo Barramento -->
+                    <div class="absolute w-6 h-6 bg-white rounded-full z-30 top-1/2 transform -translate-y-1/2 shadow-[0_0_20px_#ffffff]" style="animation: bus-data 3s infinite linear; left: -10%;"></div>
+                    <style>
+                        @keyframes bus-data {
+                            0% { left: 5%; opacity: 0; }
+                            10% { opacity: 1; }
+                            90% { opacity: 1; }
+                            100% { left: 90%; opacity: 0; }
+                        }
+                    </style>
+                </div>
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">A Linha Única</p>
+                    <p class="text-4xl text-gray-300 leading-tight">Todas as máquinas compartilham o mesmo cabo central. É extremamente barato de montar, porém ultrapassado por gerar excessivas colisões de dados e lentidão massiva.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE TOPOLOGIA 4: MALHA -->
+        <section class="slide">
+            <div class="sub-header">Topologias Físicas</div>
+            <h1 style="font-size: 5rem; color: #4ade80; -webkit-text-fill-color: #4ade80;">🕸️ MALHA (Mesh)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-green-400" style="border-width: 4px;">
+                <div class="flex-shrink-0 h-80 w-80 rounded-xl border-2 border-green-400 shadow-[0_0_50px_rgba(74,222,128,0.5)] flex flex-col items-center justify-center" style="background: rgba(0,0,0,0.5);">
+                    <div class="text-[120px] mb-4">🕸️</div>
+                    <p class="text-green-400 font-bold text-3xl tracking-widest uppercase">Full Mesh</p>
+                </div>
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">A Teia Imparável</p>
+                    <p class="text-4xl text-gray-300 leading-tight">Todos os nós estão interconectados a todos os outros. É a topologia mais resiliente: se um caminho cair, existem dezenas de alternativas. O problema: é caríssima e fisicamente complexa.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE TOPOLOGIA 5: ARVORE -->
+        <section class="slide">
+            <div class="sub-header">Topologias Físicas</div>
+            <h1 style="font-size: 5rem; color: #f59e0b; -webkit-text-fill-color: #f59e0b;">🌳 ÁRVORE (Hierárquica)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-amber-500" style="border-width: 4px;">
+                <div class="flex-shrink-0 h-80 w-80 rounded-xl border-2 border-amber-500 shadow-[0_0_50px_rgba(245,158,11,0.5)] flex flex-col items-center justify-start pt-8 relative overflow-hidden" style="background: rgba(0,0,0,0.5);">
+                    <!-- Raiz (Roteador/Core) -->
+                    <div class="text-4xl text-white bg-amber-500 rounded-full w-14 h-14 flex items-center justify-center z-20 shadow-[0_0_15px_#f59e0b]">🌍</div>
+                    <div class="w-1 h-8 bg-amber-500 z-10"></div>
+                    
+                    <!-- Distribuição (Switches) -->
+                    <div class="w-40 h-1 bg-amber-500 z-10"></div>
+                    <div class="flex justify-between w-40 relative top-[-4px] z-10">
+                        <div class="w-1 h-8 bg-amber-500"></div>
+                        <div class="w-1 h-8 bg-amber-500"></div>
+                    </div>
+                    <div class="flex justify-between w-48 z-20 mt-[-8px]">
+                        <div class="text-3xl text-white">🖧</div>
+                        <div class="text-3xl text-white">🖧</div>
+                    </div>
+
+                    <!-- Acesso (Hosts) -->
+                    <div class="flex justify-between w-48 z-10 mt-[-4px]">
+                        <div class="w-1 h-8 bg-amber-500 ml-5"></div>
+                        <div class="w-1 h-8 bg-amber-500 mr-5"></div>
+                    </div>
+                    <div class="flex justify-between w-[220px] mt-1 z-20">
+                        <div class="flex gap-1">
+                            <div class="text-3xl text-white drop-shadow-[0_0_10px_#f59e0b]">💻</div>
+                            <div class="text-3xl text-white">💻</div>
+                        </div>
+                        <div class="flex gap-1">
+                            <div class="text-3xl text-white">💻</div>
+                            <div class="text-3xl text-white drop-shadow-[0_0_10px_#f59e0b]">🖨️</div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">A Base da Internet</p>
+                    <p class="text-4xl text-gray-300 leading-tight">A fusão de Estrela e Barramento. Ela organiza a rede em hierarquia (Core, Distribuição, Acesso). É o padrão oficial de grandes empresas e da própria Internet. Permite expansão em massa mantendo o controle.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE REFLEXÃO: O CALCANHAR DE AQUILES -->
+        <section class="slide">
+            <div class="sub-header text-red-500 font-bold">Para Refletir</div>
+            <h1 style="font-size: 5rem; color: #ef4444; -webkit-text-fill-color: #ef4444;">O CALCANHAR DE AQUILES</h1>
+            <div class="glass-card mt-8 w-full max-w-6xl text-left border-red-500 p-12" style="border-width: 4px;">
+                <p class="text-[55px] text-white font-bold mb-10 leading-tight">
+                    Toda essa engenharia é extremamente frágil.
+                </p>
+                <p class="text-[40px] text-gray-300 leading-relaxed">
+                    Vocês acabaram de ver que a internet global (WAN) e os serviços que usamos hoje (Cliente-Servidor) repousam totalmente sobre <strong class="text-red-400 font-bold">cabos físicos e energia elétrica.</strong> E tudo isso tem um ponto único de falha.
+                </p>
+            </div>
+        </section>
+
+        <!-- SLIDE REFLEXÃO: A GRANDE PERGUNTA -->
+        <section class="slide">
+            <div class="sub-header text-red-500 font-bold">A Conexão com o Projeto</div>
+            <h1 style="font-size: 5rem; color: #ef4444; -webkit-text-fill-color: #ef4444;">A GRANDE PERGUNTA</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex items-center justify-center border-red-500 p-16" style="border-width: 4px;">
+                <p class="text-5xl text-white italic font-medium leading-relaxed text-center">
+                    "Se a infraestrutura global cair amanhã, o que do seu mundo continuará funcionando? Como os conceitos físicos que vimos hoje (Ponto a Ponto e Malha Local) poderão salvar a nossa comunicação no projeto <strong class="text-red-400 font-bold">O Mundo Sem Internet</strong>?"
+                </p>
+            </div>
+        </section>
+        <!-- SLIDE TEMA 1 -->
+        <section class="slide">
+            <div class="sub-header text-amber-500 font-bold">O Mundo Sem Internet: Desafio Prático</div>
+            <h1 style="font-size: 4.5rem; color: #f59e0b; -webkit-text-fill-color: #f59e0b;">TEMA 1: O Coração</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl text-left border-amber-500 flex flex-col gap-8 p-12" style="border-width: 4px;">
+                <p class="text-5xl text-white font-bold">Servidor de Conhecimento Offline</p>
+                <div class="bg-amber-900/40 border border-amber-500/50 p-6 rounded-lg shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+                    <p class="text-3xl text-amber-300 font-semibold mb-4">Missão de Hoje (Pergunta-Chave):</p>
+                    <p class="text-4xl text-white italic leading-relaxed">
+                        "Como a arquitetura Cliente-Servidor pode ser reconstruída localmente (LAN) para que nossa comunidade consiga acessar a Wikipédia sem depender da Internet (WAN)?"
+                    </p>
+                </div>
+                <div class="mt-4">
+                    <p class="text-2xl text-gray-400 uppercase tracking-widest mb-4">Equipe Responsável</p>
+                    <div class="flex flex-wrap gap-4">
+                        <span class="bg-black/50 border border-amber-500/50 text-amber-400 px-6 py-3 rounded-full text-2xl font-bold">João Victor Souza</span>
+                        <span class="bg-black/50 border border-amber-500/50 text-amber-400 px-6 py-3 rounded-full text-2xl font-bold">João Augusto</span>
+                        <span class="bg-black/50 border border-amber-500/50 text-amber-400 px-6 py-3 rounded-full text-2xl font-bold">Diego Bessas</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE TEMA 2 -->
+        <section class="slide">
+            <div class="sub-header text-amber-500 font-bold">O Mundo Sem Internet: Desafio Prático</div>
+            <h1 style="font-size: 4.5rem; color: #f59e0b; -webkit-text-fill-color: #f59e0b;">TEMA 2: O Mensageiro</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl text-left border-amber-500 flex flex-col gap-8 p-12" style="border-width: 4px;">
+                <p class="text-5xl text-white font-bold">Comunicação Resiliente</p>
+                <div class="bg-amber-900/40 border border-amber-500/50 p-6 rounded-lg shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+                    <p class="text-3xl text-amber-300 font-semibold mb-4">Missão de Hoje (Pergunta-Chave):</p>
+                    <p class="text-4xl text-white italic leading-relaxed">
+                        "Se a infraestrutura global de roteamento cair, como usar conexões Ponto a Ponto (P2P) entre dispositivos para garantir que a mensagem chegue ao destino?"
+                    </p>
+                </div>
+                <div class="mt-4">
+                    <p class="text-2xl text-gray-400 uppercase tracking-widest mb-4">Equipe Responsável</p>
+                    <div class="flex flex-wrap gap-4">
+                        <span class="bg-black/50 border border-amber-500/50 text-amber-400 px-6 py-3 rounded-full text-2xl font-bold shadow-[0_0_15px_rgba(245,158,11,0.5)]">Prof. Jhones Sena</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE TEMA 3 -->
+        <section class="slide">
+            <div class="sub-header text-amber-500 font-bold">O Mundo Sem Internet: Desafio Prático</div>
+            <h1 style="font-size: 4.5rem; color: #f59e0b; -webkit-text-fill-color: #f59e0b;">TEMA 3: A Teia</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl text-left border-amber-500 flex flex-col gap-8 p-12" style="border-width: 4px;">
+                <p class="text-5xl text-white font-bold">Redes Mesh e Bitchat</p>
+                <div class="bg-amber-900/40 border border-amber-500/50 p-6 rounded-lg shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+                    <p class="text-3xl text-amber-300 font-semibold mb-4">Missão de Hoje (Pergunta-Chave):</p>
+                    <p class="text-4xl text-white italic leading-relaxed">
+                        "Como a Topologia em Malha (Mesh) sem Switches centrais pode criar uma rede comunitária invencível quando todos os ISPs estiverem fora do ar?"
+                    </p>
+                </div>
+                <div class="mt-4">
+                    <p class="text-2xl text-gray-400 uppercase tracking-widest mb-4">Equipe Responsável</p>
+                    <div class="flex flex-wrap gap-4">
+                        <span class="bg-black/50 border border-amber-500/50 text-amber-400 px-6 py-3 rounded-full text-2xl font-bold">Augusto Batista</span>
+                        <span class="bg-black/50 border border-amber-500/50 text-amber-400 px-6 py-3 rounded-full text-2xl font-bold">Vinicius Eduardo</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE TEMA 4 -->
+        <section class="slide">
+            <div class="sub-header text-amber-500 font-bold">O Mundo Sem Internet: Desafio Prático</div>
+            <h1 style="font-size: 4.5rem; color: #f59e0b; -webkit-text-fill-color: #f59e0b;">TEMA 4: A Memória</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl text-left border-amber-500 flex flex-col gap-8 p-12" style="border-width: 4px;">
+                <p class="text-5xl text-white font-bold">Sincronização Assíncrona de Dados</p>
+                <div class="bg-amber-900/40 border border-amber-500/50 p-6 rounded-lg shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+                    <p class="text-3xl text-amber-300 font-semibold mb-4">Missão de Hoje (Pergunta-Chave):</p>
+                    <p class="text-4xl text-white italic leading-relaxed">
+                        "Em uma rede fragmentada (várias PANs e LANs isoladas), como garantir que pequenos Servidores consigam atualizar dados assim que um link de conexão temporário surgir?"
+                    </p>
+                </div>
+                <div class="mt-4">
+                    <p class="text-2xl text-gray-400 uppercase tracking-widest mb-4">Equipe Responsável</p>
+                    <div class="flex flex-wrap gap-4">
+                        <span class="bg-black/50 border border-amber-500/50 text-amber-400 px-6 py-3 rounded-full text-2xl font-bold">Wdson Rodrigo</span>
+                        <span class="bg-black/50 border border-amber-500/50 text-amber-400 px-6 py-3 rounded-full text-2xl font-bold">Andre Soares</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE TEMA 5 -->
+        <section class="slide">
+            <div class="sub-header text-amber-500 font-bold">O Mundo Sem Internet: Desafio Prático</div>
+            <h1 style="font-size: 4.5rem; color: #f59e0b; -webkit-text-fill-color: #f59e0b;">TEMA 5: A Economia Descentralizada</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl text-left border-amber-500 flex flex-col gap-8 p-12" style="border-width: 4px;">
+                <p class="text-5xl text-white font-bold">Transações Offline</p>
+                <div class="bg-amber-900/40 border border-amber-500/50 p-6 rounded-lg shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+                    <p class="text-3xl text-amber-300 font-semibold mb-4">Missão de Hoje (Pergunta-Chave):</p>
+                    <p class="text-4xl text-white italic leading-relaxed">
+                        "Sem os grandes bancos na WAN para validar pagamentos, como as transações P2P (Ponto a Ponto) com criptografia local podem criar confiança entre os hosts?"
+                    </p>
+                </div>
+                <div class="mt-4">
+                    <p class="text-2xl text-gray-400 uppercase tracking-widest mb-4">Equipe Responsável</p>
+                    <div class="flex flex-wrap gap-4">
+                        <span class="bg-black/50 border border-amber-500/50 text-amber-400 px-6 py-3 rounded-full text-2xl font-bold">Júlio César</span>
+                        <span class="bg-black/50 border border-amber-500/50 text-amber-400 px-6 py-3 rounded-full text-2xl font-bold">Pedro Utschler</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE TEMA 6 -->
+        <section class="slide">
+            <div class="sub-header text-amber-500 font-bold">O Mundo Sem Internet: Desafio Prático</div>
+            <h1 style="font-size: 4.5rem; color: #f59e0b; -webkit-text-fill-color: #f59e0b;">TEMA 6: O Oráculo</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl text-left border-amber-500 flex flex-col gap-8 p-12" style="border-width: 4px;">
+                <p class="text-5xl text-white font-bold">Agentes de IA Locais e Off-Grid</p>
+                <div class="bg-amber-900/40 border border-amber-500/50 p-6 rounded-lg shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+                    <p class="text-3xl text-amber-300 font-semibold mb-4">Missão de Hoje (Pergunta-Chave):</p>
+                    <p class="text-4xl text-white italic leading-relaxed">
+                        "Como um servidor de Inteligência Artificial isolado (Host Off-Grid) pode substituir serviços de nuvem na tomada de decisões sem depender de conexões externas?"
+                    </p>
+                </div>
+                <div class="mt-4">
+                    <p class="text-2xl text-gray-400 uppercase tracking-widest mb-4">Equipe Responsável</p>
+                    <div class="flex flex-wrap gap-4">
+                        <span class="bg-black/50 border border-amber-500/50 text-amber-400 px-6 py-3 rounded-full text-2xl font-bold">Phillipe Harry</span>
+                        <span class="bg-black/50 border border-amber-500/50 text-amber-400 px-6 py-3 rounded-full text-2xl font-bold">Matheus Pereira</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- SLIDE PRÁTICA 1: NETACAD -->
+        <section class="slide">
+            <div class="sub-header text-cyan-400 font-bold">Mão na Massa</div>
+            <h1 style="font-size: 5.5rem; color: #06b6d4; -webkit-text-fill-color: #06b6d4;">AÇÃO NA NETACAD</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl text-left border-cyan-500 flex flex-col gap-6 p-12" style="border-width: 4px;">
+                <p class="text-[40px] text-white leading-tight">
+                    Dê os primeiros passos como engenheiro de redes: instale, explore, crie e simule suas conexões — diretamente no <strong class="text-cyan-400">Packet Tracer</strong>.
+                </p>
+                
+                <div class="bg-cyan-900/40 border border-cyan-500/50 p-6 rounded-lg mt-4 shadow-[0_0_20px_rgba(6,182,212,0.2)]">
+                    <p class="text-3xl text-cyan-300 font-bold mb-4">Objetivos Principais:</p>
+                    <ol class="list-decimal list-inside text-[32px] text-gray-300 space-y-4">
+                        <li>Familiarizar-se com o ambiente e a interface do Packet Tracer.</li>
+                        <li>Aprender como baixar, instalar e iniciar a ferramenta.</li>
+                    </ol>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <a href="https://www.netacad.com/courses/getting-started-cisco-packet-tracer?courseLang=pt-BR&instance_id=577b7b28-0335-483b-87e0-80e8923055a5" target="_blank" class="inline-block bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-4 px-8 rounded-full text-2xl transition shadow-[0_0_20px_rgba(6,182,212,0.6)]">
+                        Acessar o Curso Oficial na Netacad
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE PRÁTICA 2: ACESSO -->
+        <section class="slide">
+            <div class="sub-header text-cyan-400 font-bold">Mão na Massa</div>
+            <h1 style="font-size: 5.5rem; color: #06b6d4; -webkit-text-fill-color: #06b6d4;">INSCRIÇÃO NO CURSO</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col items-center justify-center border-cyan-500 p-8 gap-8" style="border-width: 4px; background: rgba(0,0,0,0.3);">
+                <img src="assets/Imagem1.png" class="h-[55vh] w-auto rounded-xl object-contain shadow-[0_0_50px_rgba(6,182,212,0.5)]">
+                <button onclick="window.print()" class="btn-print no-print mt-4">Exportar Material em PDF</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progress-bar');
+        let currentSlide = 0;
+
+        function updateSlide() {
+            document.getElementById('deck').style.transform = `translateX(-${currentSlide * 100}vw)`;
+            slides.forEach((s, i) => {
+                s.classList.toggle('active', i === currentSlide);
+            });
+            const progress = ((currentSlide + 1) / slides.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+            if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        });
+
+        let touchstartX = 0;
+        let touchendX = 0;
+
+        window.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        });
+
+        window.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            if (touchendX < touchstartX - 50 && currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+            if (touchendX > touchstartX + 50 && currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        });
+
+        updateSlide();
+    </script>
+</body>
+</html>
