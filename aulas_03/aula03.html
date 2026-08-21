@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 03 - Meios Físicos e Cisco Packet Tracer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800;900&display=swap');
+
+        :root {
+            --primary: #00d2ff;
+            --secondary: #3a7bd5;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.2);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            overflow: hidden;
+            margin: 0;
+            height: 100vh;
+            background-image:
+                radial-gradient(circle at 15% 50%, rgba(58, 123, 213, 0.15), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(0, 210, 255, 0.15), transparent 25%);
+        }
+
+        #progress-bar-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 50;
+        }
+
+        #progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--secondary), var(--primary));
+            transition: width 0.4s ease;
+        }
+
+        #deck {
+            position: relative;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            transition: transform 0.8s cubic-bezier(0.85, 0, 0.15, 1);
+        }
+
+        .slide {
+            flex: 0 0 100vw;
+            height: 100vh;
+            padding: 2rem 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            opacity: 0.3;
+            transition: opacity 0.8s;
+            box-sizing: border-box;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+        }
+
+        h1 {
+            font-size: 5.5rem;
+            font-weight: 900;
+            background: linear-gradient(to right, #fff, #a5b4fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.2));
+        }
+
+        .sub-header {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #818cf8;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .btn-print {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-family: 'Outfit';
+            font-weight: bold;
+            font-size: 2rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+            margin-top: 4rem;
+        }
+
+        .btn-print:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        @media print {
+            @page {
+                size: landscape;
+                margin: 0;
+            }
+
+            body {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                background-color: #000000 !important;
+            }
+
+            #progress-bar-container,
+            .btn-print,
+            .no-print {
+                display: none !important;
+            }
+
+            #deck {
+                display: block !important;
+                transform: none !important;
+                width: 100% !important;
+                height: auto !important;
+            }
+
+            .slide {
+                position: relative !important;
+                display: flex !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                page-break-after: always !important;
+                page-break-inside: avoid !important;
+                opacity: 1 !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="progress-bar-container" class="no-print">
+        <div id="progress-bar"></div>
+    </div>
+
+    <div id="deck">
+        <!-- SLIDE CAPA -->
+        <section class="slide active">
+            <div class="glass-card w-full max-w-6xl relative">
+                <div class="sub-header text-cyan-400">Aula 03</div>
+                <h1
+                    style="font-size: 7rem; background: linear-gradient(to right, #22d3ee, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                    A ESPINHA DORSAL<br>E O LABORATÓRIO</h1>
+                <p class="text-4xl text-gray-300 mt-8 mb-12">Meios Físicos, Internet Global e Cisco Packet Tracer</p>
+                <div class="flex justify-center items-center gap-6 text-gray-400 mt-10">
+                    <span
+                        class="text-2xl font-bold uppercase tracking-widest bg-white/10 px-6 py-2 rounded-full border border-white/20">Redes
+                        de Computadores</span>
+                    <span>•</span>
+                    <span
+                        class="text-2xl font-bold uppercase tracking-widest bg-white/10 px-6 py-2 rounded-full border border-white/20">Prof.
+                        Jhones Sena</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE REVISÃO 1: CONCEITO DE REDE -->
+        <section class="slide">
+            <div class="sub-header text-cyan-400">Revisão Aula 02</div>
+            <h1 style="font-size: 5rem; color: #a855f7; -webkit-text-fill-color: #a855f7;">O QUE É UMA REDE?</h1>
+            <div class="glass-card mt-12 max-w-6xl p-12" style="border-width: 4px; border-color: #a855f7;">
+                <p class="text-6xl text-white font-bold mb-8 leading-tight">
+                    "Rede é um conjunto de dispositivos..."
+                </p>
+                <p class="text-5xl text-gray-300 leading-relaxed italic">
+                    ...interligados para compartilhamento de <strong class="text-purple-400">recursos</strong>, <strong
+                        class="text-purple-400">informações</strong> e <strong
+                        class="text-purple-400">serviços</strong>.
+                </p>
+            </div>
+        </section>
+
+        <!-- SLIDE REVISÃO 2: LAN -->
+        <section class="slide">
+            <div class="sub-header text-cyan-400">Revisão Aula 02</div>
+            <h1 style="font-size: 5rem; color: #4ade80; -webkit-text-fill-color: #4ade80;">LAN (Local Area Network)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col gap-10 text-left border-green-400 p-16"
+                style="border-width: 4px;">
+                <div
+                    class="bg-black/30 p-8 rounded-xl border border-green-400/50 shadow-[0_0_20px_rgba(74,222,128,0.2)]">
+                    <p class="text-5xl text-white font-bold mb-6 flex items-center gap-4">🏢 A Rede Local</p>
+                    <p class="text-[40px] text-gray-300 leading-tight">A infraestrutura base das empresas, salas de aula
+                        e residências. Abrange distâncias curtas (como um prédio ou andar) unindo computadores para
+                        compartilhamento rápido.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE REVISÃO 3: MAN -->
+        <section class="slide">
+            <div class="sub-header text-cyan-400">Revisão Aula 02</div>
+            <h1 style="font-size: 5rem; color: #facc15; -webkit-text-fill-color: #facc15;">MAN (Metropolitan Area
+                Network)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col gap-10 text-left border-yellow-400 p-16"
+                style="border-width: 4px;">
+                <div
+                    class="bg-black/30 p-8 rounded-xl border border-yellow-400/50 shadow-[0_0_20px_rgba(250,204,21,0.2)]">
+                    <p class="text-5xl text-white font-bold mb-6 flex items-center gap-4">🏙️ A Rede Metropolitana</p>
+                    <p class="text-[40px] text-gray-300 leading-tight">Interliga diversas LANs dentro do perímetro de
+                        uma cidade ou campus universitário gigante. O provedor local de fibra do bairro é um exemplo
+                        clássico.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE REVISÃO 4: VLAN -->
+        <section class="slide">
+            <div class="sub-header text-cyan-400">Revisão Aula 02</div>
+            <h1 style="font-size: 5rem; color: #2dd4bf; -webkit-text-fill-color: #2dd4bf;">VLAN (Virtual LAN)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col gap-10 text-left border-teal-400 p-16"
+                style="border-width: 4px;">
+                <div
+                    class="bg-black/30 p-8 rounded-xl border border-teal-400/50 shadow-[0_0_20px_rgba(45,212,191,0.2)]">
+                    <p class="text-5xl text-white font-bold mb-6 flex items-center gap-4">🔀 A Divisão Lógica</p>
+                    <p class="text-[40px] text-gray-300 leading-tight">Permite fatiar um único switch físico em várias
+                        redes independentes e isoladas, como se fossem equipamentos separados (Ex: Rede Visitantes e
+                        Rede Financeiro).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE REVISÃO 5: CLIENTE-SERVIDOR -->
+        <section class="slide">
+            <div class="sub-header text-cyan-400">Revisão Aula 02</div>
+            <h1 style="font-size: 5rem; color: #ef4444; -webkit-text-fill-color: #ef4444;">CLIENTE-SERVIDOR</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col gap-10 text-left border-red-500 p-16"
+                style="border-width: 4px;">
+                <div class="bg-black/30 p-8 rounded-xl border border-red-500/50 shadow-[0_0_20px_rgba(239,68,68,0.2)]">
+                    <p class="text-5xl text-white font-bold mb-6 flex items-center gap-4">🏦 O Controle Centralizado</p>
+                    <p class="text-[40px] text-gray-300 leading-tight">Um chefe (Servidor) controla todos os recursos.
+                        Altamente seguro e escalável. Exemplo: Caixas Eletrônicos dependem de um Servidor Central do
+                        Banco.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE REVISÃO 6: ESTRELA -->
+        <section class="slide">
+            <div class="sub-header text-cyan-400">Revisão Aula 02</div>
+            <h1 style="font-size: 5rem; color: #22d3ee; -webkit-text-fill-color: #22d3ee;">⭐ ESTRELA (Star)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col gap-10 text-left border-cyan-400 p-16"
+                style="border-width: 4px;">
+                <div
+                    class="bg-black/30 p-8 rounded-xl border border-cyan-400/50 shadow-[0_0_20px_rgba(34,211,238,0.2)]">
+                    <p class="text-5xl text-white font-bold mb-6 flex items-center gap-4">🔄 O Ponto Central</p>
+                    <p class="text-[40px] text-gray-300 leading-tight">Todos os dispositivos são conectados a um
+                        centralizador (Switch). Se o Switch queimar, a rede inteira para.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE REVISÃO 7: ÁRVORE -->
+        <section class="slide">
+            <div class="sub-header text-cyan-400">Revisão Aula 02</div>
+            <h1 style="font-size: 5rem; color: #f59e0b; -webkit-text-fill-color: #f59e0b;">🌳 ÁRVORE (Hierárquica)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col gap-10 text-left border-amber-500 p-16"
+                style="border-width: 4px;">
+                <div
+                    class="bg-black/30 p-8 rounded-xl border border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+                    <p class="text-5xl text-white font-bold mb-6 flex items-center gap-4">🏢 A Base da Internet</p>
+                    <p class="text-[40px] text-gray-300 leading-tight">A fusão de Estrela e Barramento. Organiza a rede
+                        em hierarquia. É o padrão oficial de grandes empresas, permitindo expansão em massa.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 2: A ESPINHA DORSAL -->
+        <section class="slide">
+            <div class="sub-header text-cyan-400">A Estrutura Física</div>
+            <h1 style="font-size: 5rem; color: #22d3ee; -webkit-text-fill-color: #22d3ee;">A ESPINHA DORSAL DA INTERNET
+            </h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-cyan-400"
+                style="border-width: 4px;">
+                <img src="assets/backbone.jpg"
+                    class="h-80 w-auto rounded-xl object-cover border-2 border-cyan-400 shadow-[0_0_50px_rgba(34,211,238,0.5)]">
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">Cabos Submarinos (Backbone)</p>
+                    <p class="text-[35px] text-gray-300 leading-tight">A nuvem não está no céu, ela está no fundo do
+                        mar. 99% de todo o tráfego intercontinental de dados viaja através de uma espessa rede de cabos
+                        de fibra óptica depositados no fundo dos oceanos. É isso que compõe a verdadeira WAN global.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE EXTRA: CABO (IMAGEM ÚNICA) -->
+        <section class="slide">
+            <div class="glass-card p-4 border-cyan-400 flex justify-center items-center"
+                style="border-width: 4px; width: 100%; max-width: 90vw; height: 85vh;">
+                <img src="assets/cabo.jpg"
+                    class="w-full h-full object-cover rounded-xl border-2 border-cyan-400 shadow-[0_0_50px_rgba(34,211,238,0.5)]">
+            </div>
+        </section>
+
+        <!-- SLIDE 3: CABEAMENTO ESTRUTURADO - INTRO -->
+        <section class="slide">
+            <div class="sub-header text-cyan-400">A Ponta Final</div>
+            <h1 style="font-size: 5rem; color: #22d3ee; -webkit-text-fill-color: #22d3ee;">CABEAMENTO ESTRUTURADO</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col gap-8 text-center border-cyan-400 p-16"
+                style="border-width: 4px;">
+                <p class="text-5xl text-gray-300 leading-relaxed mb-6">
+                    Enquanto a fibra óptica conecta continentes inteiros, as redes locais (LAN) e as nossas casas
+                    dependem fortemente de cabos metálicos de cobre (Par Trançado) para conectar PCs, Roteadores e
+                    Switches na última milha.
+                </p>
+            </div>
+        </section>
+
+        <!-- SLIDE 3.5: TRANSMISSÃO ETHERNET -->
+        <section class="slide">
+            <div class="sub-header text-cyan-400">A Ponta Final</div>
+            <h1 style="font-size: 5rem; color: #22d3ee; -webkit-text-fill-color: #22d3ee;">COMUNICAÇÃO ETHERNET</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col gap-10 text-center border-cyan-400 p-16"
+                style="border-width: 4px;">
+                <p class="text-[45px] text-gray-300 leading-relaxed mb-6">
+                    Para a comunicação em <strong class="text-white">redes Ethernet</strong>, usamos principalmente
+                    <strong class="text-cyan-400">4 dos 8 fios</strong> presentes no cabo:
+                </p>
+                <div class="flex flex-col gap-6 items-center">
+                    <div
+                        class="bg-black/50 p-6 rounded-xl border border-cyan-400/50 w-full max-w-4xl shadow-[0_0_20px_rgba(34,211,238,0.2)]">
+                        <p class="text-[40px] text-white font-bold tracking-wide">
+                            dois para <span class="text-green-400">transmitir</span> dados (TX - Transmit)
+                        </p>
+                    </div>
+                    <div
+                        class="bg-black/50 p-6 rounded-xl border border-cyan-400/50 w-full max-w-4xl shadow-[0_0_20px_rgba(34,211,238,0.2)]">
+                        <p class="text-[40px] text-white font-bold tracking-wide">
+                            dois para <span class="text-blue-400">receber</span> dados (RX - Receive)
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE 4: PADRÃO T568A -->
+        <section class="slide">
+            <div class="sub-header text-cyan-400">Padrões de Cabeamento</div>
+            <h1 style="font-size: 5rem; color: #22d3ee; -webkit-text-fill-color: #22d3ee;">PADRÃO T568A</h1>
+            <div class="glass-card mt-8 w-full max-w-5xl flex flex-col items-center text-center border-cyan-400 p-12"
+                style="border-width: 4px;">
+                <img src="assets/T568A.png"
+                    class="h-64 object-contain mb-8 rounded-xl shadow-[0_0_30px_rgba(34,211,238,0.4)] bg-white/10 p-4">
+                <p class="text-4xl text-gray-300 leading-relaxed">
+                    Padrão original oficial. <br><br> Historicamente começava com o par Verde/Branco e Verde antes do
+                    Laranja.
+                </p>
+            </div>
+        </section>
+
+        <!-- SLIDE 5: PADRÃO T568B -->
+        <section class="slide">
+            <div class="sub-header text-cyan-400">Padrões de Cabeamento</div>
+            <h1 style="font-size: 5rem; color: #22d3ee; -webkit-text-fill-color: #22d3ee;">PADRÃO T568B</h1>
+            <div class="glass-card mt-8 w-full max-w-5xl flex flex-col items-center text-center border-cyan-400 p-12"
+                style="border-width: 4px;">
+                <img src="assets/T568B.png"
+                    class="h-64 object-contain mb-8 rounded-xl shadow-[0_0_30px_rgba(34,211,238,0.4)] bg-white/10 p-4">
+                <p class="text-4xl text-gray-300 leading-relaxed">
+                    Padrão amplamente adotado e dominante na indústria hoje. <br><br> Começa com o Laranja/Branco e
+                    Laranja.
+                </p>
+            </div>
+        </section>
+        <!-- SLIDE CABEAMENTO 1: DIRETO -->
+        <section class="slide">
+            <div class="sub-header text-cyan-400">Meios Físicos: Cabeamento Estruturado</div>
+            <h1 style="font-size: 5rem; color: #60a5fa; -webkit-text-fill-color: #60a5fa;">Cabo Direto
+                (Straight-Through)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-blue-400"
+                style="border-width: 4px;">
+                <div class="flex-shrink-0 h-80 w-80 rounded-xl border-2 border-blue-400 shadow-[0_0_50px_rgba(96,165,250,0.5)] flex flex-col items-center justify-center"
+                    style="background: rgba(0,0,0,0.5);">
+                    <div class="flex items-center justify-center gap-4 text-[90px] mb-4">
+                        💻 <span class="text-blue-400 text-6xl">➔</span> 🖧
+                    </div>
+                    <p class="text-blue-400 font-bold text-3xl tracking-widest uppercase">A-A ou B-B</p>
+                </div>
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">Equipamentos Diferentes</p>
+                    <p class="text-[35px] text-gray-300 leading-tight">Usa o mesmo padrão (568A ou 568B) nas duas
+                        pontas. É o cabo padrão utilizado para conectar dispositivos de naturezas distintas, como por
+                        exemplo, ligar um <strong>PC a um Switch</strong> ou um <strong>Roteador a um Switch</strong>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE CABEAMENTO 1: DIRETO (ESQUEMA) -->
+        <section class="slide">
+            <div class="sub-header text-cyan-400">Esquema Físico</div>
+            <h1 style="font-size: 5rem; color: #60a5fa; -webkit-text-fill-color: #60a5fa;">Cabo Direto (Esquema)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col items-center justify-center p-8 border-blue-400"
+                style="border-width: 4px;">
+                <img src="assets/1. Cabo Direto.jpg"
+                    class="h-auto w-full max-h-[60vh] object-contain rounded-xl shadow-[0_0_40px_rgba(96,165,250,0.5)] bg-white p-4">
+            </div>
+        </section>
+
+        <!-- SLIDE CABEAMENTO 2: CROSSOVER -->
+        <section class="slide">
+            <div class="sub-header text-cyan-400">Meios Físicos: Cabeamento Estruturado</div>
+            <h1 style="font-size: 5rem; color: #f87171; -webkit-text-fill-color: #f87171;">Cabo Crossover (Cruzado)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-red-400"
+                style="border-width: 4px;">
+                <div class="flex-shrink-0 h-80 w-80 rounded-xl border-2 border-red-400 shadow-[0_0_50px_rgba(248,113,113,0.5)] flex flex-col items-center justify-center"
+                    style="background: rgba(0,0,0,0.5);">
+                    <div class="flex items-center justify-center gap-4 text-[90px] mb-4">
+                        💻 <span class="text-red-400 text-6xl">➔</span> 💻
+                    </div>
+                    <p class="text-red-400 font-bold text-3xl tracking-widest uppercase">A-B (Invertido)</p>
+                </div>
+                <div>
+                    <p class="text-5xl text-white font-bold mb-6">Equipamentos Iguais</p>
+                    <p class="text-[35px] text-gray-300 leading-tight">Cada ponta usa um padrão diferente (uma 568A e a
+                        outra 568B), invertendo os pares de transmissão e recepção. Utilizado para conectar dispositivos
+                        da mesma natureza diretamente, como <strong>PC com PC</strong> ou <strong>Switch com
+                            Switch</strong>.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE CABEAMENTO 2: CROSSOVER (ESQUEMA) -->
+        <section class="slide">
+            <div class="sub-header text-cyan-400">Esquema Físico</div>
+            <h1 style="font-size: 5rem; color: #f87171; -webkit-text-fill-color: #f87171;">Cabo Crossover (Esquema)</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col items-center justify-center p-8 border-red-400"
+                style="border-width: 4px;">
+                <img src="assets/CaboCrossover.jpg.png"
+                    class="h-auto w-full max-h-[60vh] object-contain rounded-xl shadow-[0_0_40px_rgba(248,113,113,0.5)] bg-white p-4">
+            </div>
+        </section>
+
+        <!-- SLIDE PRÁTICA: CONFECÇÃO -->
+        <section class="slide">
+            <div class="sub-header text-amber-400">Prática de Laboratório</div>
+            <h1 style="font-size: 5rem; color: #fbbf24; -webkit-text-fill-color: #fbbf24;">Mão na Massa: Confecção do
+                Cabo</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col items-center justify-center p-8 border-amber-400"
+                style="border-width: 4px;">
+                <img src="assets/equipamento.png"
+                    class="h-auto w-full max-h-[60vh] object-contain rounded-xl shadow-[0_0_40px_rgba(251,191,36,0.5)] bg-white/5 p-4">
+            </div>
+        </section>
+
+        <!-- SLIDE PRÁTICA: TUTORIAL -->
+        <section class="slide">
+            <div class="sub-header text-amber-400">Prática de Laboratório</div>
+            <h1 style="font-size: 5rem; color: #fbbf24; -webkit-text-fill-color: #fbbf24;">PASSO A PASSO</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col gap-6 text-left border-amber-400 p-12"
+                style="border-width: 4px;">
+                <ol class="text-4xl text-gray-200 leading-relaxed list-decimal ml-10 space-y-4 font-medium">
+                    <li><strong>Corte</strong> o cabo no comprimento desejado.</li>
+                    <li><strong>Desencape</strong> a ponta do cabo (aprox. 2 cm).</li>
+                    <li><strong>Desembarace</strong> e desenrole os pares de fios.</li>
+                    <li><strong>Alinhe</strong> os fios na ordem correta do padrão escolhido (T568B é o padrão).</li>
+                    <li><strong>Corte</strong> os fios para que fiquem retos e uniformes.</li>
+                    <li><strong>Insira</strong> os fios alinhados no conector RJ-45, garantindo que o revestimento do
+                        cabo entre um pouco no conector.</li>
+                    <li><strong>Crimpe</strong> o conector firmemente com o alicate.</li>
+                    <li><strong>Teste</strong> o cabo com o testador para garantir a continuidade correta.</li>
+                </ol>
+                <div
+                    class="bg-red-600 border border-red-400 p-6 rounded-xl mt-8 text-center shadow-[0_0_30px_rgba(220,38,38,0.6)]">
+                    <p class="text-5xl text-white font-bold tracking-wide">Agora é com vocês! Vamos criar cabos diretos.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE PRÁTICA: SEQUÊNCIA DE CORES T568B -->
+        <section class="slide">
+            <div class="sub-header text-amber-400">Prática de Laboratório</div>
+            <h1 style="font-size: 5rem; color: #fbbf24; -webkit-text-fill-color: #fbbf24;">SEQUÊNCIA T568B</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col gap-6 text-left border-amber-400 p-12"
+                style="border-width: 4px;">
+                <p class="text-[32px] text-gray-300 leading-tight mb-2">
+                    A sequência correta das cores para o <strong>Padrão T568B</strong>, que é o mais utilizado para a
+                    crimpagem de cabos de rede diretos.
+                    <br><br>
+                    Ao olhar para o conector RJ-45 de frente <strong>(com a trava para baixo)</strong>, a ordem dos
+                    pinos e as cores dos fios devem ser as seguintes, da esquerda para a direita:
+                </p>
+
+                <div
+                    class="bg-black/50 p-8 rounded-xl border border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.2)]">
+                    <ul class="text-[32px] text-white leading-relaxed space-y-2">
+                        <li><span class="font-bold text-orange-200">1. Branco-Laranja</span> (W-O: White-Orange) -
+                            <strong>Transmite Dados (TX+)</strong></li>
+                        <li><span class="font-bold text-orange-400">2. Laranja</span> (O: Orange) - <strong>Transmite
+                                Dados (TX-)</strong></li>
+                        <li><span class="font-bold text-green-200">3. Branco-Verde</span> (W-G: White-Green) -
+                            <strong>Recebe Dados (RX+)</strong></li>
+                        <li><span class="font-bold text-blue-500">4. Azul</span> (Bl: Blue)</li>
+                        <li><span class="font-bold text-blue-200">5. Branco-Azul</span> (W-Bl: White-Blue)</li>
+                        <li><span class="font-bold text-green-500">6. Verde</span> (G: Green) - <strong>Recebe Dados
+                                (RX-)</strong></li>
+                        <li><span class="font-bold text-amber-200">7. Branco-Marrom</span> (W-Br: White-Brown)</li>
+                        <li><span class="font-bold text-amber-700">8. Marrom</span> (Br: Brown)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE INTERNET 1 -->
+        <section class="slide">
+            <div class="sub-header text-purple-400">A Internet</div>
+            <h1 style="font-size: 5rem; color: #a855f7; -webkit-text-fill-color: #a855f7;">O QUE É A INTERNET?</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col gap-6 text-left border-purple-500 p-12"
+                style="border-width: 4px;">
+                <p class="text-4xl text-gray-300 leading-relaxed mb-4">A Internet é uma rede mundial de redes
+                    interligadas, que permite a comunicação e o compartilhamento de informações entre bilhões de
+                    dispositivos no mundo todo.</p>
+                <div
+                    class="bg-black/50 border border-purple-500/50 p-8 rounded-xl shadow-[0_0_20px_rgba(168,85,247,0.2)] mt-4">
+                    <p class="text-3xl text-purple-400 font-bold mb-4">🧠 Conceito Técnico:</p>
+                    <p class="text-[28px] text-gray-300 italic">“A Internet é uma estrutura descentralizada, baseada no
+                        protocolo TCP/IP, que interliga redes de computadores públicas e privadas, promovendo o
+                        intercâmbio de dados entre dispositivos e usuários.”</p>
+                    <p class="text-2xl text-gray-500 mt-4">— COMER, Douglas E. Redes de Computadores e Internet. Grupo
+                        A, 2016.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE INTERNET 2 -->
+        <section class="slide">
+            <div class="sub-header text-purple-400">A Internet</div>
+            <h1 style="font-size: 5rem; color: #a855f7; -webkit-text-fill-color: #a855f7;">COMO FUNCIONA?</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl text-left border-purple-500 p-12" style="border-width: 4px;">
+                <ul class="text-[35px] text-gray-300 space-y-8">
+                    <li class="flex items-start gap-4">
+                        <span class="text-purple-400 font-bold">1.</span>
+                        <span><strong>Dispositivos</strong> → conectam-se a redes locais (LANs, Wi-Fi, 4G/5G).</span>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <span class="text-purple-400 font-bold">2.</span>
+                        <span><strong>Essas redes</strong> → se conectam à Internet via roteadores, provedores e cabos
+                            de fibra óptica.</span>
+                    </li>
+                    <li class="flex items-start gap-4">
+                        <span class="text-purple-400 font-bold">3.</span>
+                        <span><strong>Dados</strong> viajam em pacotes, organizados e enviados por meio de protocolos
+                            (como TCP/IP, HTTP, DNS etc).</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- SLIDE TIMELINE 1 -->
+        <section class="slide">
+            <div class="sub-header text-purple-400">Linha do Tempo</div>
+            <h1 style="font-size: 4rem; color: #d8b4fe; -webkit-text-fill-color: #d8b4fe;">A EVOLUÇÃO DA INTERNET</h1>
+            <div class="mt-8 w-full max-w-7xl flex flex-col gap-8">
+                <!-- 1969 -->
+                <div class="glass-card border-purple-400 p-8 flex items-center text-left" style="border-width: 2px;">
+                    <div class="w-1/4 text-6xl text-purple-400 font-bold">1969</div>
+                    <div class="w-3/4">
+                        <p class="text-4xl text-white font-bold mb-2">ARPANET</p>
+                        <p class="text-3xl text-gray-300">Primeira rede experimental criada pelo Departamento de Defesa
+                            dos EUA. Base para a Internet moderna.</p>
+                    </div>
+                </div>
+                <!-- 1973 -->
+                <div class="glass-card border-purple-400 p-8 flex items-center text-left" style="border-width: 2px;">
+                    <div class="w-1/4 text-6xl text-purple-400 font-bold">1973</div>
+                    <div class="w-3/4">
+                        <p class="text-4xl text-white font-bold mb-2">Primeira conexão internacional</p>
+                        <p class="text-3xl text-gray-300">Inglaterra e Noruega se conectam à ARPANET. Nasce a ideia de
+                            uma rede global.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE TIMELINE 2 -->
+        <section class="slide">
+            <div class="sub-header text-purple-400">Linha do Tempo</div>
+            <h1 style="font-size: 4rem; color: #d8b4fe; -webkit-text-fill-color: #d8b4fe;">A EVOLUÇÃO DA INTERNET</h1>
+            <div class="mt-8 w-full max-w-7xl flex flex-col gap-8">
+                <!-- 1983 -->
+                <div class="glass-card border-purple-400 p-8 flex items-center text-left" style="border-width: 2px;">
+                    <div class="w-1/4 text-6xl text-purple-400 font-bold">1983</div>
+                    <div class="w-3/4">
+                        <p class="text-4xl text-white font-bold mb-2">Criação do protocolo TCP/IP</p>
+                        <p class="text-3xl text-gray-300">Torna-se o padrão da ARPANET, permitindo comunicação entre
+                            redes distintas. É o "código da Internet".</p>
+                    </div>
+                </div>
+                <!-- 1989 -->
+                <div class="glass-card border-purple-400 p-8 flex items-center text-left" style="border-width: 2px;">
+                    <div class="w-1/4 text-6xl text-purple-400 font-bold">1989</div>
+                    <div class="w-3/4">
+                        <p class="text-4xl text-white font-bold mb-2">WWW (World Wide Web)</p>
+                        <p class="text-3xl text-gray-300">Criada por Tim Berners-Lee. Surge a web como conhecemos hoje
+                            (com URLs, HTML e navegadores).</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE TIMELINE 3 -->
+        <section class="slide">
+            <div class="sub-header text-purple-400">Linha do Tempo</div>
+            <h1 style="font-size: 4rem; color: #d8b4fe; -webkit-text-fill-color: #d8b4fe;">A EVOLUÇÃO DA INTERNET</h1>
+            <div class="mt-8 w-full max-w-7xl flex flex-col gap-8">
+                <!-- 1995 -->
+                <div class="glass-card border-purple-400 p-8 flex items-center text-left" style="border-width: 2px;">
+                    <div class="w-1/4 text-6xl text-purple-400 font-bold">1995</div>
+                    <div class="w-3/4">
+                        <p class="text-4xl text-white font-bold mb-2">Internet comercial</p>
+                        <p class="text-3xl text-gray-300">A internet deixa de ser exclusiva para fins acadêmicos e
+                            militares e passa a ser usada comercialmente.</p>
+                    </div>
+                </div>
+                <!-- 1998 -->
+                <div class="glass-card border-purple-400 p-8 flex items-center text-left" style="border-width: 2px;">
+                    <div class="w-1/4 text-6xl text-purple-400 font-bold">1998</div>
+                    <div class="w-3/4">
+                        <p class="text-4xl text-white font-bold mb-2">Criação do Google</p>
+                        <p class="text-3xl text-gray-300">Otimiza o acesso à informação. A web se torna mais navegável e
+                            acessível.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE TIMELINE 4 -->
+        <section class="slide">
+            <div class="sub-header text-purple-400">Linha do Tempo</div>
+            <h1 style="font-size: 4rem; color: #d8b4fe; -webkit-text-fill-color: #d8b4fe;">A EVOLUÇÃO DA INTERNET</h1>
+            <div class="mt-8 w-full max-w-7xl flex flex-col gap-8">
+                <!-- 2007 -->
+                <div class="glass-card border-purple-400 p-8 flex items-center text-left" style="border-width: 2px;">
+                    <div class="w-1/4 text-6xl text-purple-400 font-bold">2007</div>
+                    <div class="w-3/4">
+                        <p class="text-4xl text-white font-bold mb-2">Popularização dos smartphones</p>
+                        <p class="text-3xl text-gray-300">A internet passa a ser móvel, com o lançamento do iPhone e
+                            apps conectados.</p>
+                    </div>
+                </div>
+                <!-- 2010 -->
+                <div class="glass-card border-purple-400 p-8 flex items-center text-left" style="border-width: 2px;">
+                    <div class="w-1/4 text-6xl text-purple-400 font-bold">2010</div>
+                    <div class="w-3/4">
+                        <p class="text-4xl text-white font-bold mb-2">Ascensão do Cloud Computing</p>
+                        <p class="text-3xl text-gray-300">Dados e aplicações migram para servidores em nuvem. Redes se
+                            tornam essenciais.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE TIMELINE 5 -->
+        <section class="slide">
+            <div class="sub-header text-purple-400">Linha do Tempo</div>
+            <h1 style="font-size: 4rem; color: #d8b4fe; -webkit-text-fill-color: #d8b4fe;">A EVOLUÇÃO DA INTERNET</h1>
+            <div class="mt-8 w-full max-w-7xl flex flex-col gap-8">
+                <!-- 2020 -->
+                <div class="glass-card border-purple-400 p-8 flex items-center text-left" style="border-width: 2px;">
+                    <div class="w-1/4 text-6xl text-purple-400 font-bold">2020</div>
+                    <div class="w-3/4">
+                        <p class="text-4xl text-white font-bold mb-2">Expansão do 5G</p>
+                        <p class="text-3xl text-gray-300">Novas possibilidades para IoT, cidades inteligentes, automação
+                            e tempo real.</p>
+                    </div>
+                </div>
+                <!-- 2023 -->
+                <div class="glass-card border-purple-400 p-8 flex items-center text-left" style="border-width: 2px;">
+                    <div class="w-1/4 text-6xl text-purple-400 font-bold">2023</div>
+                    <div class="w-3/4">
+                        <p class="text-4xl text-white font-bold mb-2">A Revolução da IA Generativa</p>
+                        <p class="text-3xl text-gray-300">Explosão de IAs como ChatGPT integradas à Web. Máquinas passam
+                            a raciocinar, gerar texto, código e imagem em milissegundos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE NEXT MARCO -->
+        <section class="slide">
+            <div class="glass-card w-full max-w-6xl flex flex-col gap-8 text-center border-purple-500 p-12"
+                style="border-width: 4px;">
+                <p class="text-6xl text-purple-400 font-bold">E qual será o próximo marco?</p>
+                <p class="text-4xl text-gray-300 mt-4 leading-relaxed">A Internet Quântica e o 6G estão batendo na
+                    porta.<br>Qual será a próxima grande revolução das redes?</p>
+            </div>
+        </section>
+
+        <!-- SLIDE VÍDEO -->
+        <section class="slide">
+            <div class="glass-card w-full max-w-6xl flex flex-col gap-8 text-center border-purple-500 p-4"
+                style="border-width: 4px; height: 80vh;">
+                <iframe class="w-full h-[85%] rounded-lg" src="https://www.youtube.com/embed/F9EBYnQfXl0?start=3"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen></iframe>
+                <div class="flex justify-center items-center h-[15%]">
+                    <a href="https://www.youtube.com/watch?v=F9EBYnQfXl0&t=3s" target="_blank"
+                       class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 px-8 rounded-full border border-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.5)] transition-all">
+                        ▶️ Abrir Direto no YouTube
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE PRÁTICA 2: OPERAÇÃO FANS -->
+        <section class="slide">
+            <div class="sub-header text-red-500 font-bold animate-pulse">CLASSIFICAÇÃO: TOP SECRET</div>
+            <h1 style="font-size: 5rem; color: #ef4444; -webkit-text-fill-color: #ef4444;">OPERAÇÃO FANS: RECONHECIMENTO
+            </h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-12 items-center text-left border-red-500 p-8"
+                style="border-width: 4px; background: rgba(15, 0, 0, 0.8);">
+                <div
+                    class="flex-shrink-0 flex flex-col justify-center items-center h-[400px] w-[350px] rounded-xl border-2 border-red-500 shadow-[0_0_50px_rgba(239,68,68,0.7)] bg-black/90">
+                    <span class="text-[120px] drop-shadow-[0_0_30px_#ef4444]">🕵️‍♂️</span>
+                    <p class="text-red-500 font-bold text-3xl tracking-[0.2em] mt-6">RED TEAM</p>
+                    <p class="text-gray-400 text-lg mt-2 font-mono">STATUS: ATIVO</p>
+                </div>
+                <div class="flex flex-col gap-6 text-gray-300">
+                    <div class="border-b border-red-500/30 pb-4">
+                        <p class="text-4xl text-white font-bold mb-2">Missão: Mapeamento Passivo (Footprinting)</p>
+                        <p class="text-[26px] leading-relaxed">Vocês foram recrutados para a Fase 1 de uma auditoria. O
+                            primeiro passo de um ataque ou defesa é reconhecer o terreno. Tragam a planta lógica da
+                            FANS.</p>
+                    </div>
+                    <ul class="list-disc ml-8 text-[26px] space-y-3 text-red-100">
+                        <li>Identifiquem Roteadores, Switches, Access Points e Servidores pela faculdade.</li>
+                        <li>Analisem o cabeamento: São Diretos ou Crossovers?</li>
+                        <li>Deduzam a arquitetura: Cliente-Servidor ou Ponto a Ponto?</li>
+                    </ul>
+                    <div
+                        class="mt-4 p-4 border-2 border-red-500 bg-red-900/40 rounded-lg animate-[pulse_3s_ease-in-out_infinite]">
+                        <p class="text-2xl font-bold text-red-400">⚠️ REGRA DE OURO (Stealth Mode)</p>
+                        <p class="text-xl mt-2 text-white">A investigação é apenas <strong>visual</strong>. Não
+                            desconectem cabos nem acessem equipamentos fisicamente. Se a TI da FANS for alertada, a
+                            missão falhou!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE LABORATÓRIO 1: CISCO PACKET TRACER -->
+        <section class="slide">
+            <div class="sub-header text-emerald-400 font-bold">Laboratório Virtual</div>
+            <h1 style="font-size: 5rem; color: #10b981; -webkit-text-fill-color: #10b981;">CISCO PACKET TRACER</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex flex-col items-center text-center border-emerald-500 p-12"
+                style="border-width: 4px;">
+                <div class="text-[120px] drop-shadow-[0_0_30px_#10b981]">🖥️</div>
+                <p class="text-5xl text-white font-bold mt-4 mb-6">Ambiente de Simulação</p>
+                <p class="text-[35px] text-gray-300 leading-relaxed mb-8 max-w-5xl">
+                    Hoje vamos sair da teoria. Vocês usarão o Packet Tracer para projetar, configurar e testar redes
+                    como verdadeiros engenheiros, sem o risco de queimar equipamentos reais.
+                </p>
+                <div
+                    class="bg-emerald-900/40 border border-emerald-500/50 p-6 rounded-lg shadow-[0_0_20px_rgba(16,185,129,0.2)] w-full text-left flex gap-12">
+                    <div class="w-1/2">
+                        <p class="text-3xl text-emerald-300 font-bold mb-4">Como Acessar:</p>
+                        <ul class="list-disc list-inside text-2xl text-gray-300 space-y-2">
+                            <li>Faça login na plataforma Netacad.</li>
+                            <li>Acesse o curso "Getting Started".</li>
+                            <li>Baixe a versão para Windows (64-bit).</li>
+                            <li>Instale usando as opções padrão.</li>
+                        </ul>
+                    </div>
+                    <div class="w-1/2">
+                        <p class="text-3xl text-emerald-300 font-bold mb-4">A Interface:</p>
+                        <ul class="list-disc list-inside text-2xl text-gray-300 space-y-2">
+                            <li><strong>Workspace:</strong> Área em branco para desenhar.</li>
+                            <li><strong>Devices:</strong> Equipamentos na base inferior.</li>
+                            <li><strong>Connections (Raio):</strong> Cabos de comunicação.</li>
+                            <li><strong>Play/Realtime:</strong> Botões de simulação de tempo.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SLIDE LABORATÓRIO 2: A PRIMEIRA LAN -->
+        <section class="slide">
+            <div class="sub-header text-emerald-400 font-bold">Mão na Massa</div>
+            <h1 style="font-size: 5rem; color: #10b981; -webkit-text-fill-color: #10b981;">CONSTRUINDO UMA LAN</h1>
+            <div class="glass-card mt-8 w-full max-w-7xl flex gap-10 text-left border-emerald-500 p-12"
+                style="border-width: 4px;">
+                <div class="w-1/2 flex flex-col gap-6">
+                    <p class="text-4xl text-white font-bold">Desafio Prático 1:</p>
+                    <div class="bg-black/50 border border-emerald-500/30 p-6 rounded-xl">
+                        <p class="text-3xl text-emerald-400 font-bold">1. Dispositivos Finais</p>
+                        <p class="text-[24px] text-gray-300">Arraste 3 End Devices (PCs) para a tela.</p>
+                    </div>
+                    <div class="bg-black/50 border border-emerald-500/30 p-6 rounded-xl">
+                        <p class="text-3xl text-emerald-400 font-bold">2. Concentrador (Switch)</p>
+                        <p class="text-[24px] text-gray-300">Arraste 1 Network Device (Switch 2960) para o centro.</p>
+                    </div>
+                    <div class="bg-black/50 border border-emerald-500/30 p-6 rounded-xl">
+                        <p class="text-3xl text-emerald-400 font-bold">3. Cabeamento Estruturado</p>
+                        <p class="text-[24px] text-gray-300">Qual cabo você usa para ligar o PC ao Switch? Direto ou
+                            Crossover? Faça as ligações.</p>
+                    </div>
+                </div>
+                <div
+                    class="w-1/2 bg-black/60 border-2 border-emerald-500/50 rounded-xl flex items-center justify-center relative shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-10">
+                        <span class="text-[250px]">⚙️</span>
+                    </div>
+                    <div class="z-10 flex flex-col items-center">
+                        <p class="text-4xl text-emerald-300 font-bold mb-4">Topologia Estrela</p>
+                        <div class="flex items-center gap-4">
+                            <span class="text-6xl text-white drop-shadow-[0_0_15px_#ffffff]">💻</span>
+                            <div class="h-2 w-16 bg-blue-500 rounded animate-pulse"></div>
+                            <span class="text-6xl text-emerald-400 drop-shadow-[0_0_15px_#10b981]">🖧</span>
+                            <div class="h-2 w-16 bg-blue-500 rounded animate-pulse"></div>
+                            <span class="text-6xl text-white drop-shadow-[0_0_15px_#ffffff]">💻</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SLIDE FINAL -->
+        <section class="slide">
+            <h1 style="font-size: 8rem; color: #fff;">FIM DA AULA 03</h1>
+            <p class="text-4xl text-gray-400 mt-8">Hora de salvar seus projetos no Packet Tracer!</p>
+            <button onclick="window.print()" class="btn-print no-print">Salvar PDF</button>
+        </section>
+
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progress-bar');
+        let currentSlide = 0;
+
+        function updateSlide() {
+            document.getElementById('deck').style.transform = `translateX(-${currentSlide * 100}vw)`;
+            slides.forEach((s, i) => {
+                s.classList.toggle('active', i === currentSlide);
+            });
+            const progress = ((currentSlide + 1) / slides.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' && currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+            if (e.key === 'ArrowLeft' && currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        });
+
+        let touchstartX = 0;
+        let touchendX = 0;
+
+        window.addEventListener('touchstart', e => {
+            touchstartX = e.changedTouches[0].screenX;
+        });
+
+        window.addEventListener('touchend', e => {
+            touchendX = e.changedTouches[0].screenX;
+            if (touchendX < touchstartX - 50 && currentSlide < slides.length - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+            if (touchendX > touchstartX + 50 && currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        });
+
+        // Initial setup
+        updateSlide();
+    </script>
+</body>
+
+</html>
