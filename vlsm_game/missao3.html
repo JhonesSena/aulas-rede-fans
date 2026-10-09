@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎓 VLSM Master — Atividade Interativa Completa</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0f0f1a;
+    --card: #1a1a2e;
+    --border: #2a2a4a;
+    --gold: #ffd700;
+    --orange: #ff6b35;
+    --green: #00c9a7;
+    --red: #ff3232;
+    --blue: #4a90e2;
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: var(--bg);
+    color: #fff;
+    min-height: 100vh;
+    padding: 16px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 1.8rem;
+    background: linear-gradient(90deg, var(--orange), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 4px;
+  }
+
+  .sub {
+    text-align: center;
+    color: #888;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+  }
+
+  /* ---- BARRA TOPO ---- */
+  .topbar {
+    max-width: 1400px;
+    margin: 0 auto 16px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .btn {
+    border: none;
+    padding: 9px 16px;
+    border-radius: 9px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+
+  .btn-primario { background: linear-gradient(135deg, var(--orange), var(--gold)); color: #000; }
+  .btn-primario:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(255,107,53,0.5); }
+  .btn-sec { background: var(--card); color: var(--gold); border: 2px solid var(--gold); }
+  .btn-sec:hover { background: var(--border); }
+  .btn-danger { background: var(--card); color: #ff8080; border: 2px solid var(--red); }
+  .btn-danger:hover { background: rgba(255,50,50,0.15); }
+  .btn-info { background: var(--card); color: var(--green); border: 2px solid var(--green); }
+  .btn-info:hover { background: rgba(0,201,167,0.15); }
+
+  /* ---- PAINEL TEORIA ---- */
+  .teoria {
+    max-width: 1400px;
+    margin: 0 auto 16px;
+    background: rgba(0,201,167,0.08);
+    border-left: 4px solid var(--green);
+    border-radius: 10px;
+    overflow: hidden;
+    display: none;
+  }
+
+  .teoria.aberto { display: block; animation: slide 0.3s; }
+
+  @keyframes slide {
+    from { opacity: 0; max-height: 0; }
+    to { opacity: 1; max-height: 800px; }
+  }
+
+  .teoria-conteudo {
+    padding: 16px 20px;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: #ccc;
+  }
+
+  .teoria-conteudo h3 { color: var(--green); margin-bottom: 8px; font-size: 1rem; }
+  .teoria-conteudo code { background: var(--bg); padding: 2px 6px; border-radius: 4px; color: var(--gold); font-family: monospace; }
+  .teoria-conteudo ul { margin-left: 20px; margin-top: 6px; }
+  .teoria-conteudo li { margin-bottom: 4px; }
+
+  /* ---- SELETOR ---- */
+  .seletor {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: center;
+    margin-bottom: 16px;
+    max-width: 1400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .seletor button {
+    background: var(--card);
+    color: #ccc;
+    border: 2px solid #333;
+    padding: 6px 11px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+
+  .seletor button:hover { border-color: var(--orange); color: #fff; }
+  .seletor button.ativo {
+    background: linear-gradient(135deg, var(--orange), var(--gold));
+    color: #000;
+    border-color: var(--gold);
+  }
+
+  /* ---- ENUNCIADO ---- */
+  .enunciado {
+    max-width: 1400px;
+    margin: 0 auto 14px;
+    background: linear-gradient(135deg, var(--card), var(--bg));
+    border: 2px solid var(--gold);
+    border-radius: 12px;
+    padding: 14px;
+  }
+
+  .enunciado h2 { color: var(--gold); font-size: 1.05rem; margin-bottom: 6px; }
+  .enunciado p { color: #ccc; font-size: 0.85rem; line-height: 1.5; }
+  .enunciado .info { margin-top: 10px; display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.8rem; }
+  .enunciado .info strong { color: var(--green); }
+
+  /* ---- PROGRESSO ---- */
+  .progresso-wrap {
+    max-width: 1400px;
+    margin: 0 auto 14px;
+    background: var(--card);
+    border-radius: 10px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.8rem;
+  }
+
+  .progresso-barra {
+    flex: 1;
+    height: 8px;
+    background: var(--bg);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .progresso-preenchido {
+    height: 100%;
+    background: linear-gradient(90deg, var(--orange), var(--gold));
+    width: 0%;
+    transition: width 0.4s;
+  }
+
+  /* ---- TIMER ---- */
+  .timer {
+    font-family: 'Courier New', monospace;
+    font-weight: 800;
+    color: var(--gold);
+    font-size: 0.95rem;
+  }
+
+  .timer.alerta { color: var(--red); animation: pisca 1s infinite; }
+
+  @keyframes pisca {
+    50% { opacity: 0.3; }
+  }
+
+  /* ---- TABELA ---- */
+  .tabela-wrap {
+    max-width: 1400px;
+    margin: 0 auto 16px;
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    overflow-x: auto;
+  }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+
+  thead th {
+    background: var(--bg);
+    color: var(--gold);
+    padding: 8px 5px;
+    text-align: left;
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 0.63rem;
+    letter-spacing: 0.4px;
+    border-bottom: 2px solid var(--border);
+  }
+
+  tbody td {
+    padding: 5px;
+    border-bottom: 1px solid var(--border);
+    color: #ddd;
+    vertical-align: middle;
+  }
+
+  tbody tr:hover { background: #16162a; }
+  tbody tr.linha-correta { background: rgba(0,201,167,0.08); }
+  tbody tr.linha-errada { background: rgba(255,50,50,0.08); }
+
+  .input-celula {
+    background: var(--bg);
+    border: 2px solid var(--border);
+    color: var(--gold);
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    padding: 5px 7px;
+    border-radius: 6px;
+    width: 100%;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  .input-celula:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(255,215,0,0.15); }
+  .input-celula.correto { border-color: var(--green); background: rgba(0,201,167,0.1); color: var(--green); }
+  .input-celula.errado { border-color: var(--red); background: rgba(255,50,50,0.1); color: #ff8080; }
+  .input-celula.dica { border-color: var(--orange); background: rgba(255,107,53,0.1); }
+  .input-celula::placeholder { color: #444; }
+  .input-celula:disabled { opacity: 0.8; cursor: not-allowed; border-color: #555; background: #000; }
+
+  .crit-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 800;
+    font-size: 0.62rem;
+    color: #000;
+  }
+
+  .btn-dica {
+    background: transparent;
+    border: 1px solid var(--orange);
+    color: var(--orange);
+    padding: 2px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.62rem;
+    font-weight: 700;
+  }
+
+  .btn-dica:hover { background: rgba(255,107,53,0.2); }
+
+  /* ---- AÇÕES ---- */
+  .acoes {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  /* ---- RESULTADO ---- */
+  .resultado {
+    max-width: 1400px;
+    margin: 0 auto 16px;
+    padding: 16px;
+    border-radius: 12px;
+    text-align: center;
+    display: none;
+    animation: aparece 0.5s;
+  }
+
+  .resultado.mostrar { display: block; }
+  .resultado.bom { background: rgba(0,201,167,0.15); border: 2px solid var(--green); }
+  .resultado.medio { background: rgba(255,215,0,0.15); border: 2px solid var(--gold); }
+  .resultado.ruim { background: rgba(255,50,50,0.15); border: 2px solid var(--red); }
+
+  @keyframes aparece {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .resultado .nota { font-size: 2.2rem; font-weight: 900; margin-bottom: 4px; }
+  .resultado .msg { font-size: 0.95rem; color: #ddd; }
+  .resultado .detalhes { margin-top: 8px; font-size: 0.8rem; color: #aaa; }
+
+  /* ---- MODAL ---- */
+  .modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    padding: 20px;
+  }
+
+  .modal.aberto { display: flex; }
+
+  .modal-box {
+    background: var(--card);
+    border: 2px solid var(--gold);
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 480px;
+    width: 100%;
+    animation: aparece 0.3s;
+  }
+
+  .modal-box h3 { color: var(--gold); margin-bottom: 12px; font-size: 1.1rem; }
+  .modal-box p { color: #ccc; font-size: 0.85rem; line-height: 1.6; margin-bottom: 12px; }
+  .modal-box input {
+    width: 100%;
+    padding: 10px;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    color: #fff;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+    outline: none;
+  }
+  .modal-box input:focus { border-color: var(--gold); }
+  .modal-box .botoes { display: flex; gap: 8px; justify-content: flex-end; }
+
+  /* ---- CALCULADORA ---- */
+  .calc-resultado {
+    background: var(--bg);
+    border: 2px solid var(--green);
+    border-radius: 10px;
+    padding: 14px;
+    margin-top: 12px;
+    font-size: 0.85rem;
+    line-height: 1.7;
+    color: #ccc;
+  }
+
+  .calc-resultado strong { color: var(--gold); }
+  .calc-resultado .destaque { color: var(--green); font-size: 1.1rem; font-weight: 800; }
+
+  /* ---- HISTÓRICO ---- */
+  .historico-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    background: var(--bg);
+    border-radius: 8px;
+    margin-bottom: 6px;
+    border-left: 4px solid var(--gold);
+    font-size: 0.82rem;
+  }
+
+  .historico-item .nota-hist { font-weight: 800; color: var(--gold); font-size: 1rem; }
+  .historico-item .data-hist { color: #888; font-size: 0.72rem; }
+
+  /* ---- MODO PASSO A PASSO ---- */
+  .passo-box {
+    max-width: 1400px;
+    margin: 0 auto 16px;
+    background: linear-gradient(135deg, rgba(255,107,53,0.1), rgba(255,215,0,0.05));
+    border: 2px solid var(--orange);
+    border-radius: 12px;
+    padding: 16px;
+    display: none;
+  }
+
+  .passo-box.aberto { display: block; }
+
+  .passo-box h3 { color: var(--orange); font-size: 1rem; margin-bottom: 8px; }
+  .passo-box p { color: #ccc; font-size: 0.85rem; margin-bottom: 10px; line-height: 1.5; }
+  .passo-box .passo-input {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .passo-box input {
+    flex: 1;
+    min-width: 200px;
+    padding: 10px;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    color: var(--gold);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: 'Courier New', monospace;
+    outline: none;
+  }
+  .passo-box input:focus { border-color: var(--orange); }
+  .passo-box input.correto { border-color: var(--green); color: var(--green); }
+  .passo-box input.errado { border-color: var(--red); color: #ff8080; }
+  .passo-feedback { font-size: 0.82rem; margin-top: 8px; padding: 10px; border-radius: 8px; display: none; }
+  .passo-feedback.ok { background: rgba(0,201,167,0.15); color: var(--green); border-left: 3px solid var(--green); display: block; }
+  .passo-feedback.err { background: rgba(255,50,50,0.15); color: #ff8080; border-left: 3px solid var(--red); display: block; }
+  .passo-feedback.info { background: rgba(255,215,0,0.1); color: var(--gold); border-left: 3px solid var(--gold); display: block; }
+
+  .passo-progresso { display: flex; gap: 4px; margin-bottom: 12px; }
+  .passo-bolinha {
+    flex: 1;
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    transition: background 0.3s;
+  }
+  .passo-bolinha.ok { background: var(--green); }
+  .passo-bolinha.atual { background: var(--orange); animation: pisca 1s infinite; }
+
+  /* ---- PIZZA MINI (feedback visual) ---- */
+  .pizza-mini {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 120px;
+    height: 120px;
+    z-index: 50;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+  }
+  .pizza-mini.mostrar { opacity: 1; transform: scale(1); }
+
+</style>
+</head>
+<body>
+
+<div style="padding: 16px; max-width: 1400px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1);">
+  <button onclick="window.location.href='dashboard.html'" style="background:transparent; border:none; color:#ccc; cursor:pointer; font-weight:bold; font-size:1rem;">⬅ Voltar ao Dashboard</button>
+  <button id="btn-concluir-missao3" onclick="concluirMissao('m3')" style="background: #444; color: #888; font-weight: bold; border: none; padding: 10px 20px; border-radius: 8px; cursor: not-allowed;" disabled>🔒 Faltam 11 cenários</button>
+</div>
+<script>
+function concluirMissao(m) {
+    const user = JSON.parse(localStorage.getItem('vlsm_user'));
+    if(!user) return window.location.href='index.html';
+    let progress = JSON.parse(localStorage.getItem(`vlsm_badges_${user.email}`) || '[]');
+    if(!progress.includes(m)) {
+        progress.push(m);
+        localStorage.setItem(`vlsm_badges_${user.email}`, JSON.stringify(progress));
+    }
+    window.location.href = 'dashboard.html';
+}
+</script>
+
+<h1>🎓 VLSM Master</h1>
+<p class="sub">Atividade interativa completa — teoria, passo a passo, calculadora e histórico</p>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <button class="btn btn-info" onclick="toggleTeoria()">📚 Teoria</button>
+  <button class="btn btn-info" onclick="abrirCalculadora()">🧮 Calculadora</button>
+  <button class="btn btn-sec" onclick="iniciarPassoAPasso()">🪜 Modo Guiado</button>
+  <button class="btn btn-sec" onclick="sortearCenario()">🎲 Sortear</button>
+  <button class="btn btn-sec" onclick="abrirHistorico()">📈 Histórico</button>
+  <button class="btn btn-danger" onclick="abrirLoginProfessor()">🔐 Prof</button>
+</div>
+
+<!-- TEORIA -->
+<div class="teoria" id="teoria">
+  <div class="teoria-conteudo">
+    <h3>📚 Como funciona o VLSM?</h3>
+    <p><strong>VLSM</strong> (Variable Length Subnet Mask) é a técnica de dividir uma rede em <strong>sub-redes de tamanhos diferentes</strong>, aproveitando melhor os endereços IP.</p>
+    <ul>
+      <li>📏 <strong>Fórmula:</strong> <code>2^n − 2 ≥ hosts</code> (o −2 é rede + broadcast)</li>
+      <li>📊 <strong>Ordem:</strong> sempre do <strong>maior setor pro menor</strong></li>
+      <li>🎯 <strong>Máscaras comuns:</strong> /25=126, /26=62, /27=30, /28=14, /29=6, /30=2</li>
+      <li>🍕 Cada <strong>pizza</strong> = 1 rede /24 (256 endereços)</li>
+      <li>🔢 <strong>Rede:</strong> primeiro IP do bloco (todos bits host = 0)</li>
+      <li>📢 <strong>Broadcast:</strong> último IP do bloco (todos bits host = 1)</li>
+    </ul>
+    <p style="margin-top:10px"><strong>Exemplo:</strong> 60 hosts → precisa de 62 → <code>2⁶ = 64</code> → máscara <code>/26</code>.</p>
+  </div>
+</div>
+
+<!-- SELETOR -->
+<div class="seletor" id="seletor"></div>
+
+<!-- ENUNCIADO -->
+<div class="enunciado" id="enunciado"></div>
+
+<!-- PROGRESSO + TIMER -->
+<div class="progresso-wrap">
+  <span>📊 Progresso:</span>
+  <div class="progresso-barra"><div class="progresso-preenchido" id="progresso"></div></div>
+  <span id="progresso-txt">0 / 0 campos</span>
+  <span style="margin-left:auto">⏱️ <span class="timer" id="timer">00:00</span></span>
+</div>
+
+<!-- PASSO A PASSO -->
+<div class="passo-box" id="passo-box"></div>
+
+<!-- AÇÕES -->
+<div class="acoes">
+  <button class="btn btn-primario" onclick="corrigir()" id="btn-corrigir">✅ Corrigir</button>
+  <button class="btn btn-sec" onclick="mostrarGabarito()" id="btn-gabarito">👁️ Gabarito</button>
+  <button class="btn btn-danger" onclick="limpar()" id="btn-limpar">🔄 Limpar</button>
+</div>
+
+<!-- RESULTADO -->
+<div class="resultado" id="resultado"></div>
+
+<!-- TABELA -->
+<div class="tabela-wrap">
+  <table id="tabela">
+    <thead>
+      <tr>
+        <th style="width:50px">Hosts</th>
+        <th>Setor</th>
+        <th style="width:80px">Crit.</th>
+        <th style="width:85px">Máscara</th>
+        <th style="width:140px">Rede</th>
+        <th style="width:140px">Broadcast</th>
+        <th style="width:140px">Faixa</th>
+        <th style="width:60px">Pizza</th>
+        <th style="width:50px">💡</th>
+      </tr>
+    </thead>
+    <tbody id="tabela-corpo"></tbody>
+  </table>
+</div>
+
+<!-- PIZZA MINI (feedback) -->
+<svg class="pizza-mini" id="pizza-mini" viewBox="0 0 100 100"></svg>
+
+<!-- MODAL GENÉRICO -->
+<div class="modal" id="modal">
+  <div class="modal-box" id="modal-box"></div>
+</div>
+
+<script>
+/* ============================================================
+   BASE DE DADOS — 11 CENÁRIOS
+   ============================================================ */
+const CENARIOS = [
+  { nome: "🏥 Hospital", base: "192.168.", inicio: 200, setores: [
+    { nome: "Ala Médica", hosts: 120, crit: "Alta" },
+    { nome: "Wi-Fi Visitantes", hosts: 100, crit: "Baixa" },
+    { nome: "Pronto-Socorro", hosts: 60, crit: "Altíssima" },
+    { nome: "Laboratório", hosts: 40, crit: "Alta" },
+    { nome: "UTI", hosts: 30, crit: "Máxima" },
+    { nome: "Administrativo", hosts: 25, crit: "Média" },
+    { nome: "VLAN Médica", hosts: 20, crit: "Alta" },
+    { nome: "Recepção", hosts: 15, crit: "Média" },
+    { nome: "VLAN Gerenciamento", hosts: 10, crit: "Crítica" },
+    { nome: "Sistemas Críticos", hosts: 8, crit: "Máxima" },
+  ]},
+  { nome: "🎓 Faculdade", base: "10.10.", inicio: 0, setores: [
+    { nome: "Wi-Fi Alunos", hosts: 120, crit: "Baixa" },
+    { nome: "Lab. Informática", hosts: 100, crit: "Alta" },
+    { nome: "Salas de Aula", hosts: 80, crit: "Alta" },
+    { nome: "Biblioteca", hosts: 60, crit: "Média" },
+    { nome: "Wi-Fi Professores", hosts: 40, crit: "Média" },
+    { nome: "CFTV / Segurança", hosts: 25, crit: "Crítica" },
+    { nome: "Secretaria", hosts: 20, crit: "Alta" },
+    { nome: "Coordenação", hosts: 15, crit: "Média" },
+    { nome: "Servidores", hosts: 12, crit: "Máxima" },
+    { nome: "Diretoria", hosts: 10, crit: "Crítica" },
+  ]},
+  { nome: "💻 Tech Solutions", base: "172.16.", inicio: 10, setores: [
+    { nome: "Desenvolvimento", hosts: 100, crit: "Alta" },
+    { nome: "Wi-Fi Corporativo", hosts: 80, crit: "Média" },
+    { nome: "Comercial", hosts: 60, crit: "Alta" },
+    { nome: "Wi-Fi Visitantes", hosts: 40, crit: "Baixa" },
+    { nome: "Financeiro", hosts: 25, crit: "Crítica" },
+    { nome: "Infra / TI", hosts: 20, crit: "Máxima" },
+    { nome: "RH", hosts: 20, crit: "Média" },
+    { nome: "Data Center", hosts: 15, crit: "Máxima" },
+    { nome: "Diretoria", hosts: 10, crit: "Crítica" },
+    { nome: "Recepção", hosts: 8, crit: "Baixa" },
+  ]},
+  { nome: "🧾 Contabilidade", base: "192.168.", inicio: 50, setores: [
+    { nome: "Dep. Fiscal", hosts: 50, crit: "Alta" },
+    { nome: "Contab. Geral", hosts: 45, crit: "Alta" },
+    { nome: "Dep. Pessoal", hosts: 40, crit: "Crítica" },
+    { nome: "Wi-Fi Visitantes", hosts: 30, crit: "Baixa" },
+    { nome: "Atendimento", hosts: 25, crit: "Média" },
+    { nome: "Auditoria", hosts: 20, crit: "Crítica" },
+    { nome: "Impressoras", hosts: 12, crit: "Média" },
+    { nome: "Servidores", hosts: 10, crit: "Máxima" },
+    { nome: "Diretoria", hosts: 8, crit: "Crítica" },
+    { nome: "Recepção", hosts: 6, crit: "Baixa" },
+  ]},
+  { nome: "🚑 UPA", base: "192.168.", inicio: 100, setores: [
+    { nome: "Wi-Fi Pacientes", hosts: 50, crit: "Baixa" },
+    { nome: "Consultórios", hosts: 40, crit: "Alta" },
+    { nome: "Recepção/Triagem", hosts: 30, crit: "Alta" },
+    { nome: "Observação", hosts: 25, crit: "Máxima" },
+    { nome: "Sala Medicação", hosts: 20, crit: "Máxima" },
+    { nome: "Laboratório", hosts: 20, crit: "Alta" },
+    { nome: "CFTV", hosts: 20, crit: "Crítica" },
+    { nome: "Administrativo", hosts: 18, crit: "Média" },
+    { nome: "Raio-X", hosts: 15, crit: "Crítica" },
+    { nome: "Farmácia", hosts: 12, crit: "Alta" },
+  ]},
+  { nome: "🏭 Indústria", base: "10.20.", inicio: 0, setores: [
+    { nome: "Produção / CLP", hosts: 60, crit: "Máxima" },
+    { nome: "Administrativo", hosts: 50, crit: "Média" },
+    { nome: "Engenharia", hosts: 40, crit: "Alta" },
+    { nome: "Wi-Fi Operacional", hosts: 40, crit: "Média" },
+    { nome: "Manutenção", hosts: 30, crit: "Crítica" },
+    { nome: "Qualidade", hosts: 25, crit: "Alta" },
+    { nome: "Expedição", hosts: 25, crit: "Alta" },
+    { nome: "Almoxarifado", hosts: 20, crit: "Média" },
+    { nome: "Portaria", hosts: 15, crit: "Crítica" },
+    { nome: "Servidores MES", hosts: 12, crit: "Máxima" },
+  ]},
+  { nome: "🛒 Shopping", base: "172.20.", inicio: 0, setores: [
+    { nome: "Wi-Fi Clientes", hosts: 120, crit: "Baixa" },
+    { nome: "Lojas Internas", hosts: 100, crit: "Alta" },
+    { nome: "Segurança / CFTV", hosts: 80, crit: "Crítica" },
+    { nome: "Administração", hosts: 50, crit: "Alta" },
+    { nome: "Praça Alimentação", hosts: 40, crit: "Média" },
+    { nome: "Estacionamento", hosts: 30, crit: "Alta" },
+    { nome: "Manutenção", hosts: 20, crit: "Média" },
+    { nome: "Marketing", hosts: 15, crit: "Média" },
+    { nome: "Servidores", hosts: 12, crit: "Máxima" },
+    { nome: "Recepção / SAC", hosts: 10, crit: "Baixa" },
+  ]},
+  { nome: "⚽ Estádio", base: "10.30.", inicio: 0, setores: [
+    { nome: "Wi-Fi Torcida", hosts: 120, crit: "Baixa" },
+    { nome: "CFTV / Segurança", hosts: 100, crit: "Crítica" },
+    { nome: "Catracas", hosts: 60, crit: "Máxima" },
+    { nome: "Imprensa", hosts: 50, crit: "Alta" },
+    { nome: "Camarotes", hosts: 40, crit: "Média" },
+    { nome: "Bilheteria", hosts: 25, crit: "Alta" },
+    { nome: "Arbitragem / VAR", hosts: 20, crit: "Máxima" },
+    { nome: "Administração", hosts: 20, crit: "Média" },
+    { nome: "Vestiários", hosts: 15, crit: "Alta" },
+    { nome: "Iluminação / Som", hosts: 10, crit: "Crítica" },
+  ]},
+  { nome: "🤖 SmartFactory", base: "192.168.", inicio: 80, setores: [
+    { nome: "CLPs / Sensores", hosts: 80, crit: "Máxima" },
+    { nome: "Wi-Fi Industrial", hosts: 35, crit: "Média" },
+    { nome: "Robôs Industriais", hosts: 30, crit: "Máxima" },
+    { nome: "IHM / Painéis", hosts: 25, crit: "Crítica" },
+    { nome: "Logística Interna", hosts: 22, crit: "Média" },
+    { nome: "Eng. Automação", hosts: 20, crit: "Alta" },
+    { nome: "Manut. Preditiva", hosts: 18, crit: "Alta" },
+    { nome: "Supervisório SCADA", hosts: 15, crit: "Máxima" },
+    { nome: "Gerenc. Rede", hosts: 12, crit: "Crítica" },
+    { nome: "Backup", hosts: 10, crit: "Máxima" },
+  ]},
+  { nome: "🌐 Cidade Digital", base: "10.40.", inicio: 0, setores: [
+    { nome: "Wi-Fi Público", hosts: 120, crit: "Baixa" },
+    { nome: "Educação", hosts: 100, crit: "Alta" },
+    { nome: "Segurança Pública", hosts: 80, crit: "Crítica" },
+    { nome: "Prefeitura", hosts: 60, crit: "Alta" },
+    { nome: "Saúde Municipal", hosts: 50, crit: "Alta" },
+    { nome: "Semáforos", hosts: 40, crit: "Máxima" },
+    { nome: "Iluminação Pública", hosts: 30, crit: "Média" },
+    { nome: "Defesa Civil", hosts: 20, crit: "Crítica" },
+    { nome: "Gestão / TI", hosts: 18, crit: "Alta" },
+    { nome: "Data Center", hosts: 15, crit: "Máxima" },
+  ]},
+  { nome: "🏢 Torre Business", base: "172.25.", inicio: 0, setores: [
+    { nome: "Escritórios", hosts: 100, crit: "Alta" },
+    { nome: "Wi-Fi Corporativo", hosts: 80, crit: "Média" },
+    { nome: "Wi-Fi Visitantes", hosts: 60, crit: "Baixa" },
+    { nome: "CFTV / Segurança", hosts: 50, crit: "Crítica" },
+    { nome: "Salas de Reunião", hosts: 40, crit: "Alta" },
+    { nome: "Admin. Predial", hosts: 22, crit: "Média" },
+    { nome: "Data Center", hosts: 20, crit: "Máxima" },
+    { nome: "Ar-Condicionado", hosts: 18, crit: "Alta" },
+    { nome: "Recepção", hosts: 15, crit: "Média" },
+    { nome: "Elevadores", hosts: 12, crit: "Crítica" },
+  ]},
+];
+
+const CORES = {
+  "Máxima":"#ff2020", "Crítica":"#ff6b35", "Altíssima":"#ff6b35",
+  "Alta":"#ffd700", "Média":"#00c9a7", "Baixa":"#4a90e2",
+};
+
+/* ============================================================
+   ESTADO GLOBAL
+   ============================================================ */
+let cenarioAtual = 0;
+let gabarito = [];
+let professorLogado = false;
+let timerSeg = 0;
+let timerInterval = null;
+let modoPassoAPasso = false;
+let passoAtual = 0;
+
+const SENHA_PROF = "120120"; // 🔐 Altere aqui
+
+/* ============================================================
+   UTILIDADES
+   ============================================================ */
+function ipParaInt(ip) {
+  return ip.split('.').reduce((acc, o) => (acc << 8) + parseInt(o), 0) >>> 0;
+}
+function intParaIp(n) {
+  return [(n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255].join('.');
+}
+function calcularMascara(hosts) {
+  const precisa = hosts + 2;
+  let tamanho = 1, bits = 0;
+  while (tamanho < precisa) { tamanho *= 2; bits++; }
+  return { tamanho, bits };
+}
+function gerarRede(base, inicio, idx) {
+  return `${base}${inicio + idx}.0`;
+}
+
+/* ============================================================
+   TEORIA
+   ============================================================ */
+function toggleTeoria() {
+  document.getElementById('teoria').classList.toggle('aberto');
+}
+
+/* ============================================================
+   SELETOR E TRAVA
+   ============================================================ */
+function initSeletor() {
+  const div = document.getElementById('seletor');
+  div.innerHTML = '';
+  const userData = localStorage.getItem('vlsm_user');
+  let completed = {};
+  if(userData) {
+      const user = JSON.parse(userData);
+      completed = JSON.parse(localStorage.getItem(`vlsm_locked_${user.email}`) || '{}');
+  }
+
+  CENARIOS.forEach((c, i) => {
+    const b = document.createElement('button');
+    if(completed[i]) {
+        b.innerHTML = `✅ ${c.nome}`;
+        b.style.opacity = '0.6';
+    } else {
+        b.textContent = c.nome;
+    }
+    b.onclick = () => selecionar(i);
+    div.appendChild(b);
+  });
+  verificarConclusaoTotal();
+}
+
+function verificarConclusaoTotal() {
+    const userData = localStorage.getItem('vlsm_user');
+    if(!userData) return;
+    const user = JSON.parse(userData);
+    const completed = JSON.parse(localStorage.getItem(`vlsm_locked_${user.email}`) || '{}');
+    
+    let allCompleted = true;
+    for(let i = 0; i < CENARIOS.length; i++) {
+        if(!completed[i]) {
+            allCompleted = false;
+            break;
+        }
+    }
+    
+    const btnConcluir = document.getElementById('btn-concluir-missao3');
+    if(allCompleted) {
+        btnConcluir.disabled = false;
+        btnConcluir.style.background = 'linear-gradient(135deg, #ff6b35, #ffd700)';
+        btnConcluir.style.color = 'black';
+        btnConcluir.style.cursor = 'pointer';
+        btnConcluir.innerHTML = '🏆 Concluir Missão 3';
+    } else {
+        btnConcluir.disabled = true;
+        btnConcluir.style.background = '#444';
+        btnConcluir.style.color = '#888';
+        btnConcluir.style.cursor = 'not-allowed';
+        const totalConcluidos = Object.keys(completed).length;
+        btnConcluir.innerHTML = `🔒 Faltam ${CENARIOS.length - totalConcluidos} cenários`;
+    }
+}
+
+function selecionar(i) {
+  cenarioAtual = i;
+  document.querySelectorAll('.seletor button').forEach((b, idx) => {
+    b.classList.toggle('ativo', idx === i);
+  });
+  document.getElementById('resultado').classList.remove('mostrar');
+  document.getElementById('passo-box').classList.remove('aberto');
+  modoPassoAPasso = false;
+  passoAtual = 0;
+  iniciarTimer();
+  montar();
+}
+
+function sortearCenario() {
+  const i = Math.floor(Math.random() * CENARIOS.length);
+  selecionar(i);
+}
+
+function aplicarTravaVisuais() {
+    document.querySelectorAll('.input-celula').forEach(inp => inp.disabled = true);
+    document.getElementById('btn-corrigir').style.display = 'none';
+    document.getElementById('btn-limpar').style.display = 'none';
+    document.querySelectorAll('.btn-dica').forEach(btn => btn.style.display = 'none');
+}
+
+function liberarTravaVisuais() {
+    document.querySelectorAll('.input-celula').forEach(inp => inp.disabled = false);
+    document.getElementById('btn-corrigir').style.display = 'inline-block';
+    document.getElementById('btn-limpar').style.display = 'inline-block';
+    document.querySelectorAll('.btn-dica').forEach(btn => btn.style.display = 'inline-block');
+}
+
+function travarCenarioAtual() {
+    const userData = localStorage.getItem('vlsm_user');
+    if(userData) {
+        const user = JSON.parse(userData);
+        let completed = JSON.parse(localStorage.getItem(`vlsm_locked_${user.email}`) || '{}');
+        
+        let respostas = [];
+        gabarito.forEach((g, i) => {
+            respostas.push({
+                masc: document.getElementById(`inp-masc-${i}`).value,
+                rede: document.getElementById(`inp-rede-${i}`).value,
+                bcast: document.getElementById(`inp-bcast-${i}`).value,
+                faixa: document.getElementById(`inp-faixa-${i}`).value,
+                pizza: document.getElementById(`inp-pizza-${i}`).value,
+            });
+        });
+
+        completed[cenarioAtual] = { answers: respostas };
+        localStorage.setItem(`vlsm_locked_${user.email}`, JSON.stringify(completed));
+    }
+    
+    aplicarTravaVisuais();
+    initSeletor(); 
+    document.querySelectorAll('.seletor button').forEach((b, idx) => {
+      b.classList.toggle('ativo', idx === cenarioAtual);
+    });
+}
+
+/* ============================================================
+   MONTAGEM
+   ============================================================ */
+function montar() {
+  const c = CENARIOS[cenarioAtual];
+  const setores = [...c.setores].sort((a, b) => b.hosts - a.hosts);
+
+  const pizzas = [];
+  let pizzaAtual = { idx: 0, rede: gerarRede(c.base, c.inicio, 0), setores: [], usado: 0 };
+  pizzas.push(pizzaAtual);
+  gabarito = [];
+
+  setores.forEach((s) => {
+    const { tamanho, bits } = calcularMascara(s.hosts);
+    if (pizzaAtual.usado + tamanho > 256) {
+      const novoIdx = pizzas.length;
+      pizzaAtual = { idx: novoIdx, rede: gerarRede(c.base, c.inicio, novoIdx), setores: [], usado: 0 };
+      pizzas.push(pizzaAtual);
+    }
+    const inicio = pizzaAtual.usado;
+    const redeInt = ipParaInt(pizzaAtual.rede) + inicio;
+    const bcastInt = redeInt + tamanho - 1;
+    const primeiro = redeInt + 1;
+    const ultimo = bcastInt - 1;
+    const mascara = `/${32 - bits}`;
+
+    gabarito.push({
+      hosts: s.hosts, nome: s.nome, crit: s.crit,
+      mascara, rede: intParaIp(redeInt), broadcast: intParaIp(bcastInt),
+      faixa: `.${primeiro & 255} a .${ultimo & 255}`,
+      pizza: `#${pizzaAtual.idx + 1}`,
+      pizzaIdx: pizzaAtual.idx,
+    });
+
+    pizzaAtual.setores.push({ ...s, tamanho, bits, inicio });
+    pizzaAtual.usado += tamanho;
+  });
+
+  const totalUsado = pizzas.reduce((s, p) => s + p.usado, 0);
+  document.getElementById('enunciado').innerHTML = `
+    <h2>${c.nome}</h2>
+    <p>Preencha a tabela aplicando <strong>VLSM</strong> (do maior setor pro menor). Use redes /24 a partir de <strong>${c.base}${c.inicio}.0</strong>.</p>
+    <div class="info">
+      <span>🍕 Pizzas: <strong>${pizzas.length}</strong></span>
+      <span>📋 Setores: <strong>${setores.length}</strong></span>
+      <span>🌐 Endereços usados: <strong>${totalUsado}</strong></span>
+      <span>📐 Campos: <strong>${setores.length * 5}</strong></span>
+    </div>
+  `;
+
+  const corpo = document.getElementById('tabela-corpo');
+  corpo.innerHTML = '';
+
+  gabarito.forEach((g, i) => {
+    const tr = document.createElement('tr');
+    tr.id = `linha-${i}`;
+    tr.innerHTML = `
+      <td><strong>${g.hosts}</strong></td>
+      <td>${g.nome}</td>
+      <td><span class="crit-badge" style="background:${CORES[g.crit]}">${g.crit}</span></td>
+      <td><input class="input-celula" id="inp-masc-${i}" placeholder="/__" maxlength="3" data-campo="masc" data-linha="${i}"></td>
+      <td><input class="input-celula" id="inp-rede-${i}" placeholder="X.X.X.X" data-campo="rede" data-linha="${i}"></td>
+      <td><input class="input-celula" id="inp-bcast-${i}" placeholder="X.X.X.X" data-campo="bcast" data-linha="${i}"></td>
+      <td><input class="input-celula" id="inp-faixa-${i}" placeholder=".X a .Y" data-campo="faixa" data-linha="${i}"></td>
+      <td><input class="input-celula" id="inp-pizza-${i}" placeholder="#_" maxlength="2" data-campo="pizza" data-linha="${i}"></td>
+      <td><button class="btn-dica" onclick="pedirDica(${i})">💡</button></td>
+    `;
+    corpo.appendChild(tr);
+  });
+
+  // Event listeners pra UX
+  document.querySelectorAll('.input-celula').forEach(inp => {
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === 'Tab') {
+        e.preventDefault();
+        navegarProximo(inp);
+      }
+    });
+    inp.addEventListener('input', atualizarProgresso);
+  });
+
+  atualizarProgresso();
+
+  // Verifica bloqueio
+  const userData = localStorage.getItem('vlsm_user');
+  if(userData) {
+      const user = JSON.parse(userData);
+      const completed = JSON.parse(localStorage.getItem(`vlsm_locked_${user.email}`) || '{}');
+      if(completed[cenarioAtual]) {
+          const ans = completed[cenarioAtual].answers;
+          gabarito.forEach((g, i) => {
+              if(ans[i]) {
+                  document.getElementById(`inp-masc-${i}`).value = ans[i].masc || '';
+                  document.getElementById(`inp-rede-${i}`).value = ans[i].rede || '';
+                  document.getElementById(`inp-bcast-${i}`).value = ans[i].bcast || '';
+                  document.getElementById(`inp-faixa-${i}`).value = ans[i].faixa || '';
+                  document.getElementById(`inp-pizza-${i}`).value = ans[i].pizza || '';
+              }
+          });
+          aplicarTravaVisuais();
+          
+          // Mostrar resultado novamente, se quiser, mas a trava e os valores ja indicam q foi feito
+      } else {
+          liberarTravaVisuais();
+      }
+  }
+}
+
+function navegarProximo(inp) {
+  const todos = [...document.querySelectorAll('.input-celula')];
+  const idx = todos.indexOf(inp);
+  if (idx < todos.length - 1) {
+    todos[idx + 1].focus();
+  }
+}
+
+function atualizarProgresso() {
+  const total = gabarito.length * 5;
+  let preenchidos = 0;
+  document.querySelectorAll('.input-celula').forEach(inp => {
+    if (inp.value.trim() !== '') preenchidos++;
+  });
+  const pct = (preenchidos / total) * 100;
+  document.getElementById('progresso').style.width = pct + '%';
+  document.getElementById('progresso-txt').textContent = `${preenchidos} / ${total} campos`;
+}
+
+/* ============================================================
+   TIMER
+   ============================================================ */
+function iniciarTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerSeg = 0;
+  atualizarTimer();
+  timerInterval = setInterval(() => {
+    timerSeg++;
+    atualizarTimer();
+  }, 1000);
+}
+
+function atualizarTimer() {
+  const m = String(Math.floor(timerSeg / 60)).padStart(2, '0');
+  const s = String(timerSeg % 60).padStart(2, '0');
+  const el = document.getElementById('timer');
+  el.textContent = `${m}:${s}`;
+  if (timerSeg > 1800) el.classList.add('alerta');
+}
+
+/* ============================================================
+   DICAS GRADUAIS
+   ============================================================ */
+const dicasEstado = {};
+
+function pedirDica(linha) {
+  const g = gabarito[linha];
+  const nivel = (dicasEstado[linha] || 0) + 1;
+  dicasEstado[linha] = nivel;
+
+  let msg = '';
+  const inp = document.getElementById(`inp-masc-${linha}`);
+
+  if (nivel === 1) {
+    msg = `💡 Nível 1: Use a fórmula 2^n − 2 ≥ ${g.hosts}. Qual potência de 2 passa de ${g.hosts + 2}?`;
+  } else if (nivel === 2) {
+    const { bits } = calcularMascara(g.hosts);
+    msg = `💡 Nível 2: 2^${bits} = ${Math.pow(2, bits)} endereços. A máscara é /${32 - bits}.`;
+  } else if (nivel === 3) {
+    msg = `💡 Nível 3: Máscara = ${g.mascara} | Rede começa em ${g.rede}`;
+    inp.classList.add('dica');
+  } else {
+    msg = `💡 Nível 4 (resposta): Máscara ${g.mascara} | Rede ${g.rede} | Broadcast ${g.broadcast} | Faixa ${g.faixa} | Pizza ${g.pizza}`;
+  }
+
+  mostrarToast(msg);
+}
+
+function mostrarToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = `
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%);
+    background:linear-gradient(135deg,#ff6b35,#ffd700); color:#000;
+    padding:14px 22px; border-radius:12px; font-weight:700; font-size:0.85rem;
+    z-index:999; max-width:90%; box-shadow:0 8px 24px rgba(0,0,0,0.4);
+    animation:aparece 0.3s; line-height:1.5;
+  `;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 5000);
+}
+
+/* ============================================================
+   CORRIGIR (com feedback inteligente)
+   ============================================================ */
+function corrigir() {
+  let acertos = 0;
+  let total = gabarito.length * 5;
+  let errosPorLinha = [];
+
+  gabarito.forEach((g, i) => {
+    const campos = [
+      { campo: 'masc', correto: g.mascara, id: `inp-masc-${i}` },
+      { campo: 'rede', correto: g.rede, id: `inp-rede-${i}` },
+      { campo: 'bcast', correto: g.broadcast, id: `inp-bcast-${i}` },
+      { campo: 'faixa', correto: g.faixa, id: `inp-faixa-${i}` },
+      { campo: 'pizza', correto: g.pizza, id: `inp-pizza-${i}` },
+    ];
+
+    let errosLinha = 0;
+
+    campos.forEach(({ correto, id }) => {
+      const el = document.getElementById(id);
+      const valor = el.value.trim().replace(/\s+/g, ' ');
+      const normaliza = (v) => v.replace(/\s/g, '').toLowerCase();
+      const igual = normaliza(valor) === normaliza(correto);
+
+      el.classList.remove('correto', 'errado', 'dica');
+
+      if (igual) {
+        el.classList.add('correto');
+        acertos++;
+        el.removeAttribute('title');
+      } else {
+        el.classList.add('errado');
+        el.title = `Correto: ${correto}\nMotivo: ${explicarErro(correto, valor, g)}`;
+        errosLinha++;
+      }
+    });
+
+    const linha = document.getElementById(`linha-${i}`);
+    linha.classList.remove('linha-correta', 'linha-errada');
+    if (errosLinha === 0) linha.classList.add('linha-correta');
+    else { linha.classList.add('linha-errada'); errosPorLinha.push({ i, g, errosLinha }); }
+  });
+
+  const nota = ((acertos / total) * 10).toFixed(1);
+  const res = document.getElementById('resultado');
+  res.classList.add('mostrar');
+  res.className = 'resultado mostrar ' + (nota >= 8 ? 'bom' : nota >= 5 ? 'medio' : 'ruim');
+
+  const tempo = `${Math.floor(timerSeg / 60)}m ${timerSeg % 60}s`;
+  res.innerHTML = `
+    <div class="nota">${nota} / 10</div>
+    <div class="msg">${acertos} de ${total} campos corretos</div>
+    <div class="detalhes">⏱️ Tempo: ${tempo} | Passe o mouse nos campos vermelhos pra ver o motivo do erro</div>
+    ${errosPorLinha.length > 0 ? `<div class="detalhes" style="margin-top:10px">❌ Linhas com erro: ${errosPorLinha.map(e => e.g.nome).join(', ')}</div>` : '🎉 <div class="detalhes">PERFEITO! Você dominou o VLSM!</div>'}
+  `;
+
+  // Pizza de recompensa
+  if (nota >= 8) mostrarPizzaRecompensa();
+
+  res.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  // Salva no histórico
+  salvarHistorico(nota, tempo);
+  
+  // TRAVA DEFINITIVA DE TENTATIVA ÚNICA
+  travarCenarioAtual();
+}
+
+function explicarErro(correto, digitado, g) {
+  if (digitado === '') return 'Campo vazio';
+  if (correto.startsWith('/')) return `Para ${g.hosts} hosts, o ideal é ${correto}`;
+  if (correto.includes(' a ')) return `A faixa de hosts vai de ${correto}`;
+  if (correto.startsWith('#')) return `Este setor pertence à pizza ${correto}`;
+  if (correto.split('.').length === 4) return `O endereço correto é ${correto}`;
+  return 'Verifique o valor';
+}
+
+/* ============================================================
+   PIZZA RECOMPENSA
+   ============================================================ */
+function mostrarPizzaRecompensa() {
+  const svg = document.getElementById('pizza-mini');
+  svg.innerHTML = '';
+  const cx = 50, cy = 50, r = 42;
+
+  const massa = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  massa.setAttribute('cx', cx); massa.setAttribute('cy', cy); massa.setAttribute('r', r + 3);
+  massa.setAttribute('fill', '#3a2a1a'); massa.setAttribute('stroke', '#ffd700'); massa.setAttribute('stroke-width', '2');
+  svg.appendChild(massa);
+
+  for (let i = 0; i < 6; i++) {
+    const inicio = i * 60, fim = (i + 1) * 60;
+    const x1 = cx + r * Math.cos(inicio * Math.PI / 180);
+    const y1 = cy + r * Math.sin(inicio * Math.PI / 180);
+    const x2 = cx + r * Math.cos(fim * Math.PI / 180);
+    const y2 = cy + r * Math.sin(fim * Math.PI / 180);
+    const f = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    f.setAttribute('d', `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 0 1 ${x2} ${y2} Z`);
+    f.setAttribute('fill', ['#ffd700','#ff6b35','#00c9a7','#4a90e2','#ff2020','#ffd700'][i]);
+    f.setAttribute('stroke', '#0f0f1a');
+    f.setAttribute('stroke-width', '1');
+    svg.appendChild(f);
+  }
+
+  svg.classList.add('mostrar');
+  setTimeout(() => svg.classList.remove('mostrar'), 3000);
+}
+
+/* ============================================================
+   GABARITO (só prof)
+   ============================================================ */
+function mostrarGabarito() {
+  if (!professorLogado) {
+    mostrarToast('🔐 Apenas o professor pode ver o gabarito. Clique em "Prof" no topo.');
+    return;
+  }
+  gabarito.forEach((g, i) => {
+    document.getElementById(`inp-masc-${i}`).value = g.mascara;
+    document.getElementById(`inp-rede-${i}`).value = g.rede;
+    document.getElementById(`inp-bcast-${i}`).value = g.broadcast;
+    document.getElementById(`inp-faixa-${i}`).value = g.faixa;
+    document.getElementById(`inp-pizza-${i}`).value = g.pizza;
+  });
+  atualizarProgresso();
+}
+
+/* ============================================================
+   LIMPAR
+   ============================================================ */
+function limpar() {
+  gabarito.forEach((g, i) => {
+    ['masc','rede','bcast','faixa','pizza'].forEach(c => {
+      const el = document.getElementById(`inp-${c}-${i}`);
+      el.value = '';
+      el.classList.remove('correto','errado','dica');
+      el.removeAttribute('title');
+    });
+    document.getElementById(`linha-${i}`).classList.remove('linha-correta','linha-errada');
+  });
+  document.getElementById('resultado').classList.remove('mostrar');
+  atualizarProgresso();
+}
+
+/* ============================================================
+   LOGIN PROFESSOR
+   ============================================================ */
+function abrirLoginProfessor() {
+  if (professorLogado) {
+    professorLogado = false;
+    mostrarToast('👋 Modo aluno ativado');
+    return;
+  }
+  const modal = document.getElementById('modal');
+  document.getElementById('modal-box').innerHTML = `
+    <h3>🔐 Modo Professor</h3>
+    <p>Digite a senha para liberar o gabarito.</p>
+    <input type="password" id="senha-input" placeholder="Senha" onkeydown="if(event.key==='Enter')confirmarSenha()">
+    <div class="botoes">
+      <button class="btn btn-sec" onclick="fecharModal()">Cancelar</button>
+      <button class="btn btn-primario" onclick="confirmarSenha()">Entrar</button>
+    </div>
+  `;
+  modal.classList.add('aberto');
+  setTimeout(() => document.getElementById('senha-input').focus(), 100);
+}
+
+function confirmarSenha() {
+  const s = document.getElementById('senha-input').value;
+  if (s === SENHA_PROF) {
+    professorLogado = true;
+    fecharModal();
+    mostrarToast('✅ Modo professor ativado!');
+  } else {
+    mostrarToast('❌ Senha incorreta');
+  }
+}
+
+function fecharModal() {
+  document.getElementById('modal').classList.remove('aberto');
+}
+
+/* ============================================================
+   CALCULADORA
+   ============================================================ */
+function abrirCalculadora() {
+  const modal = document.getElementById('modal');
+  document.getElementById('modal-box').innerHTML = `
+    <h3>🧮 Calculadora de Máscara</h3>
+    <p>Digite a quantidade de hosts que você precisa.</p>
+    <input type="number" id="calc-hosts" placeholder="Ex: 60" min="1" onkeydown="if(event.key==='Enter')calcular()">
+    <div class="botoes">
+      <button class="btn btn-sec" onclick="fecharModal()">Fechar</button>
+      <button class="btn btn-primario" onclick="calcular()">Calcular</button>
+    </div>
+    <div id="calc-resultado"></div>
+  `;
+  modal.classList.add('aberto');
+  setTimeout(() => document.getElementById('calc-hosts').focus(), 100);
+}
+
+function calcular() {
+  const hosts = parseInt(document.getElementById('calc-hosts').value);
+  if (!hosts || hosts < 1) {
+    document.getElementById('calc-resultado').innerHTML = '<p style="color:#ff8080">Digite um valor válido.</p>';
+    return;
+  }
+  const { tamanho, bits } = calcularMascara(hosts);
+  const mascara = `/${32 - bits}`;
+  const usaveis = tamanho - 2;
+  const desperdicio = usaveis - hosts;
+
+  document.getElementById('calc-resultado').innerHTML = `
+    <div class="calc-resultado">
+      <p><strong>Hosts pedidos:</strong> ${hosts}</p>
+      <p><strong>Máscara ideal:</strong> <span class="destaque">${mascara}</span></p>
+      <p><strong>Endereços totais:</strong> ${tamanho} (2^${bits})</p>
+      <p><strong>Hosts utilizáveis:</strong> ${usaveis}</p>
+      <p><strong>Desperdício:</strong> ${desperdicio} endereços</p>
+      <p style="margin-top:8px; font-size:0.78rem; color:#888">💡 Lembre: a máscara é o menor bloco que cabe ${hosts + 2} endereços.</p>
+    </div>
+  `;
+}
+
+/* ============================================================
+   HISTÓRICO
+   ============================================================ */
+function salvarHistorico(nota, tempo) {
+  const hist = JSON.parse(localStorage.getItem('vlsm_historico') || '[]');
+  hist.unshift({
+    cenario: CENARIOS[cenarioAtual].nome,
+    nota: parseFloat(nota),
+    tempo,
+    data: new Date().toLocaleString('pt-BR'),
+  });
+  localStorage.setItem('vlsm_historico', JSON.stringify(hist.slice(0, 20)));
+}
+
+function abrirHistorico() {
+  const hist = JSON.parse(localStorage.getItem('vlsm_historico') || '[]');
+  const modal = document.getElementById('modal');
+
+  let html = '<h3>📈 Histórico de Tentativas</h3>';
+  if (hist.length === 0) {
+    html += '<p>Nenhuma tentativa registrada ainda.</p>';
+  } else {
+    const media = (hist.reduce((s, h) => s + h.nota, 0) / hist.length).toFixed(1);
+    html += `<p>📊 Média: <strong style="color:#ffd700">${media}</strong> | Tentativas: <strong>${hist.length}</strong></p>`;
+    html += '<div style="max-height:300px; overflow-y:auto; margin-top:10px">';
+    hist.forEach(h => {
+      html += `
+        <div class="historico-item">
+          <div>
+            <div style="font-weight:700">${h.cenario}</div>
+            <div class="data-hist">${h.data} • ${h.tempo}</div>
+          </div>
+          <div class="nota-hist">${h.nota.toFixed(1)}</div>
+        </div>
+      `;
+    });
+    html += '</div>';
+  }
+  html += `
+    <div class="botoes" style="margin-top:12px">
+      <button class="btn btn-danger" onclick="limparHistorico()">🗑️ Limpar</button>
+      <button class="btn btn-sec" onclick="fecharModal()">Fechar</button>
+    </div>
+  `;
+
+  document.getElementById('modal-box').innerHTML = html;
+  modal.classList.add('aberto');
+}
+
+function limparHistorico() {
+  if (confirm('Tem certeza que quer apagar todo o histórico?')) {
+    localStorage.removeItem('vlsm_historico');
+    abrirHistorico();
+  }
+}
+
+/* ============================================================
+   MODO PASSO A PASSO
+   ============================================================ */
+function iniciarPassoAPasso() {
+  modoPassoAPasso = true;
+  passoAtual = 0;
+  document.getElementById('passo-box').classList.add('aberto');
+  renderPasso();
+}
+
+function renderPasso() {
+  const box = document.getElementById('passo-box');
+  const g = gabarito[passoAtual];
+
+  if (!g) {
+    box.innerHTML = `
+      <h3>🎉 Passo a passo concluído!</h3>
+      <p>Você passou por todos os setores. Agora tente preencher a tabela completa sozinho!</p>
+      <button class="btn btn-primario" onclick="fecharPasso()">Começar modo livre</button>
+    `;
+    return;
+  }
+
+  const progressoHTML = gabarito.map((_, i) => {
+    let cls = 'passo-bolinha';
+    if (i < passoAtual) cls += ' ok';
+    if (i === passoAtual) cls += ' atual';
+    return `<div class="${cls}"></div>`;
+  }).join('');
+
+  box.innerHTML = `
+    <h3>🪜 Passo ${passoAtual + 1} de ${gabarito.length}: ${g.nome}</h3>
+    <div class="passo-progresso">${progressoHTML}</div>
+    <p>Este setor precisa de <strong>${g.hosts} hosts</strong>. Vamos calcular juntos:</p>
+    <div class="passo-input">
+      <label style="font-size:0.82rem; color:#aaa">1. Qual máscara usar?</label>
+      <input id="passo-masc" placeholder="Ex: /26">
+      <button class="btn btn-primario" onclick="verificarPasso('masc')">Verificar</button>
+    </div>
+    <div id="passo-feedback" class="passo-feedback"></div>
+  `;
+  setTimeout(() => document.getElementById('passo-masc')?.focus(), 100);
+}
+
+function verificarPasso(campo) {
+  const g = gabarito[passoAtual];
+  const el = document.getElementById('passo-masc');
+  const fb = document.getElementById('passo-feedback');
+  const val = el.value.trim();
+
+  const normaliza = (v) => v.replace(/\s/g, '').toLowerCase();
+  const ok = normaliza(val) === normaliza(g.mascara);
+
+  if (ok) {
+    el.classList.add('correto');
+    fb.className = 'passo-feedback ok';
+    fb.innerHTML = `✅ Correto! <strong>${g.mascara}</strong> dá ${Math.pow(2, 32 - parseInt(g.mascara.slice(1)))} endereços (${Math.pow(2, 32 - parseInt(g.mascara.slice(1))) - 2} usáveis).<br><br>🎯 Próximo passo: qual o <strong>endereço de rede</strong>?`;
+    setTimeout(() => {
+      document.getElementById('passo-box').innerHTML += `
+        <div class="passo-input" style="margin-top:12px">
+          <label style="font-size:0.82rem; color:#aaa">2. Endereço de rede?</label>
+          <input id="passo-rede" placeholder="Ex: ${g.rede}">
+          <button class="btn btn-primario" onclick="verificarPasso2()">Verificar</button>
+        </div>
+      `;
+      document.getElementById('passo-rede').focus();
+    }, 400);
+  } else {
+    el.classList.add('errado');
+    fb.className = 'passo-feedback err';
+    const { bits } = calcularMascara(g.hosts);
+    fb.innerHTML = `❌ Ainda não. Dica: ${g.hosts} + 2 = ${g.hosts + 2}. Qual potência de 2 passa disso?<br>2^${bits} = ${Math.pow(2, bits)} → máscara /${32 - bits}`;
+  }
+}
+
+function verificarPasso2() {
+  const g = gabarito[passoAtual];
+  const el = document.getElementById('passo-rede');
+  const fb = document.getElementById('passo-feedback');
+  const ok = el.value.trim() === g.rede;
+
+  if (ok) {
+    el.classList.add('correto');
+    fb.className = 'passo-feedback ok';
+    fb.innerHTML = `✅ Isso! A rede é <strong>${g.rede}</strong>.<br><br>📢 E o <strong>broadcast</strong>? (último IP do bloco)`;
+    setTimeout(() => {
+      document.getElementById('passo-box').innerHTML += `
+        <div class="passo-input" style="margin-top:12px">
+          <label style="font-size:0.82rem; color:#aaa">3. Broadcast?</label>
+          <input id="passo-bcast" placeholder="Ex: ${g.broadcast}">
+          <button class="btn btn-primario" onclick="verificarPasso3()">Verificar</button>
+        </div>
+      `;
+      document.getElementById('passo-bcast').focus();
+    }, 400);
+  } else {
+    el.classList.add('errado');
+    fb.className = 'passo-feedback err';
+    fb.innerHTML = `❌ Lembre: a rede começa no primeiro IP do bloco. O anterior terminou em .${(parseInt(g.rede.split('.')[3]) - 1 + 256) % 256}.`;
+  }
+}
+
+function verificarPasso3() {
+  const g = gabarito[passoAtual];
+  const el = document.getElementById('passo-bcast');
+  const fb = document.getElementById('passo-feedback');
+  const ok = el.value.trim() === g.broadcast;
+
+  if (ok) {
+    el.classList.add('correto');
+    fb.className = 'passo-feedback ok';
+    fb.innerHTML = `🎉 Perfeito! Setor <strong>${g.nome}</strong> dominado!<br><br>Vamos pro próximo?`;
+    setTimeout(() => {
+      passoAtual++;
+      setTimeout(renderPasso, 800);
+    }, 1200);
+  } else {
+    el.classList.add('errado');
+    fb.className = 'passo-feedback err';
+    fb.innerHTML = `❌ Broadcast é o último IP antes do próximo bloco. Dica: rede + tamanho − 1.`;
+  }
+}
+
+function fecharPasso() {
+  document.getElementById('passo-box').classList.remove('aberto');
+  modoPassoAPasso = false;
+}
+
+/* ============================================================
+   INICIALIZAÇÃO
+   ============================================================ */
+initSeletor();
+selecionar(0);
+</script>
+</body>
+</html>

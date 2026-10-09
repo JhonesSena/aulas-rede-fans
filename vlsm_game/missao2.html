@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌐 Simulador de Rede Animada</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0f0f1a;
+    --card: #1a1a2e;
+    --border: #2a2a4a;
+    --gold: #ffd700;
+    --orange: #ff6b35;
+    --green: #00c9a7;
+    --red: #ff3232;
+    --blue: #4a90e2;
+    --purple: #bb00ff;
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: var(--bg);
+    color: #fff;
+    min-height: 100vh;
+    padding: 16px;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 1.8rem;
+    background: linear-gradient(90deg, var(--blue), var(--green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 4px;
+  }
+
+  .sub {
+    text-align: center;
+    color: #888;
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+  }
+
+  /* ---- BARRA AÇÕES ---- */
+  .acoes-topo {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .btn {
+    border: none;
+    padding: 10px 18px;
+    border-radius: 9px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+
+  .btn-primario { background: linear-gradient(135deg, var(--blue), #2a6bc7); color: #fff; }
+  .btn-primario:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(74,144,226,0.5); }
+
+  .btn-green { background: linear-gradient(135deg, var(--green), #00a88a); color: #000; }
+  .btn-green:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,201,167,0.5); }
+
+  .btn-orange { background: linear-gradient(135deg, var(--orange), var(--gold)); color: #000; }
+  .btn-orange:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(255,107,53,0.5); }
+
+  .btn-sec { background: var(--card); color: var(--gold); border: 2px solid var(--gold); }
+  .btn-sec:hover { background: var(--border); }
+
+  /* ---- CANVAS ---- */
+  .canvas-wrap {
+    max-width: 1000px;
+    margin: 0 auto 20px;
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    position: relative;
+  }
+
+  svg.rede {
+    width: 100%;
+    height: 480px;
+    display: block;
+  }
+
+  /* ---- CONTROLES DOS PCs ---- */
+  .controles {
+    max-width: 1000px;
+    margin: 0 auto 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+  }
+
+  .pc-controle {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+  }
+
+  .pc-controle h4 {
+    color: var(--gold);
+    font-size: 0.9rem;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pc-controle .bolinha {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #888;
+    transition: background 0.3s;
+  }
+
+  .pc-controle .campo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .pc-controle label {
+    font-size: 0.7rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .pc-controle input {
+    padding: 8px 10px;
+    background: var(--bg);
+    border: 2px solid var(--border);
+    color: var(--gold);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-family: 'Courier New', monospace;
+    outline: none;
+  }
+
+  .pc-controle input:focus { border-color: var(--blue); }
+
+  /* ---- RESULTADO ---- */
+  .resultado {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 16px 20px;
+    background: var(--card);
+    border-radius: 12px;
+    border-left: 4px solid var(--blue);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    display: none;
+  }
+
+  .resultado.mostrar { display: block; animation: aparece 0.4s; }
+
+  @keyframes aparece {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .resultado h3 { color: var(--gold); font-size: 1rem; margin-bottom: 8px; }
+
+  .resultado .linha {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    font-family: monospace;
+  }
+
+  .resultado .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-weight: 800;
+    font-size: 0.72rem;
+  }
+
+  .tag-ok { background: var(--green); color: #000; }
+  .tag-erro { background: var(--red); color: #fff; }
+  .tag-info { background: var(--blue); color: #fff; }
+</style>
+</head>
+<body>
+
+<div style="padding: 16px; max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1);">
+  <button onclick="window.location.href='dashboard.html'" style="background:transparent; border:none; color:#ccc; cursor:pointer; font-weight:bold; font-size:1rem;">⬅ Voltar ao Dashboard</button>
+  <button onclick="concluirMissao('m2')" style="background: linear-gradient(135deg, #ff6b35, #ffd700); color: black; font-weight: bold; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">🏆 Concluir Missão 2</button>
+</div>
+<script>
+function concluirMissao(m) {
+    const user = JSON.parse(localStorage.getItem('vlsm_user'));
+    if(!user) return window.location.href='index.html';
+    let progress = JSON.parse(localStorage.getItem(`vlsm_badges_${user.email}`) || '[]');
+    if(!progress.includes(m)) {
+        progress.push(m);
+        localStorage.setItem(`vlsm_badges_${user.email}`, JSON.stringify(progress));
+    }
+    window.location.href = 'dashboard.html';
+}
+</script>
+
+<h1>🌐 Simulador de Rede Animada</h1>
+<p class="sub">Digite os IPs, veja quem está na mesma sub-rede e envie pacotes!</p>
+
+<div class="acoes-topo">
+  <button class="btn btn-sec" onclick="preencherExemplo()">📋 Preencher Exemplo</button>
+  <button class="btn btn-primario" onclick="verificarRede()">🔍 Verificar Rede</button>
+  <button class="btn btn-green" onclick="enviarPacote()">📦 Enviar Pacote</button>
+  <button class="btn btn-orange" onclick="enviarBroadcast()">📢 Broadcast</button>
+  <button class="btn btn-sec" onclick="limparTudo()">🔄 Limpar</button>
+</div>
+
+<div class="canvas-wrap">
+  <svg class="rede" id="rede" viewBox="0 0 1000 480"></svg>
+</div>
+
+<div class="controles" id="controles"></div>
+
+<div class="resultado" id="resultado"></div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   CONFIGURAÇÕES
+   ═══════════════════════════════════════════════════════════════ */
+const QTD_PCS = 6;
+const REDE_EXEMPLO = "192.168.1.";
+const MASCARA_EXEMPLO = "/24";
+
+/* ═══════════════════════════════════════════════════════════════
+   ESTADO GLOBAL
+   ═══════════════════════════════════════════════════════════════ */
+let pcs = [];
+
+/* ═══════════════════════════════════════════════════════════════
+   UTILIDADES
+   ═══════════════════════════════════════════════════════════════ */
+function ipParaInt(ip) {
+  const p = ip.split('.').map(Number);
+  if (p.length !== 4 || p.some(isNaN)) return null;
+  return ((p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3]) >>> 0;
+}
+
+function intParaIp(n) {
+  return [(n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255].join('.');
+}
+
+function prefixoParaMascara(p) {
+  const bits = parseInt(p.replace('/', ''));
+  if (isNaN(bits) || bits < 0 || bits > 32) return null;
+  return (0xFFFFFFFF << (32 - bits)) >>> 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DESENHAR A REDE (SVG)
+   ═══════════════════════════════════════════════════════════════ */
+function desenharRede() {
+  const svg = document.getElementById('rede');
+  svg.innerHTML = '';
+
+  const cx = 500, cy = 240, raio = 180;
+
+  // Roteador central
+  const roteador = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  roteador.setAttribute('cx', cx);
+  roteador.setAttribute('cy', cy);
+  roteador.setAttribute('r', '40');
+  roteador.setAttribute('fill', '#1a1a2e');
+  roteador.setAttribute('stroke', '#ffd700');
+  roteador.setAttribute('stroke-width', '3');
+  svg.appendChild(roteador);
+
+  const rt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  rt.setAttribute('x', cx);
+  rt.setAttribute('y', cy + 6);
+  rt.setAttribute('text-anchor', 'middle');
+  rt.setAttribute('fill', '#ffd700');
+  rt.setAttribute('font-size', '24');
+  rt.setAttribute('font-weight', '900');
+  rt.textContent = '📡';
+  svg.appendChild(rt);
+
+  // PCs ao redor
+  pcs.forEach((pc, i) => {
+    const ang = (i / QTD_PCS) * Math.PI * 2 - Math.PI / 2;
+    const px = cx + raio * Math.cos(ang);
+    const py = cy + raio * Math.sin(ang);
+
+    pc.x = px;
+    pc.y = py;
+
+    // Cabo
+    const cabo = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    cabo.setAttribute('x1', cx);
+    cabo.setAttribute('y1', cy);
+    cabo.setAttribute('x2', px);
+    cabo.setAttribute('y2', py);
+    cabo.setAttribute('stroke', pc.cor || '#444');
+    cabo.setAttribute('stroke-width', '3');
+    cabo.setAttribute('id', `cabo-${i}`);
+    svg.appendChild(cabo);
+
+    // PC (círculo)
+    const pcCirculo = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    pcCirculo.setAttribute('cx', px);
+    pcCirculo.setAttribute('cy', py);
+    pcCirculo.setAttribute('r', '32');
+    pcCirculo.setAttribute('fill', '#1a1a2e');
+    pcCirculo.setAttribute('stroke', pc.cor || '#888');
+    pcCirculo.setAttribute('stroke-width', '3');
+    pcCirculo.setAttribute('id', `pc-${i}`);
+    svg.appendChild(pcCirculo);
+
+    // Ícone do PC
+    const icone = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    icone.setAttribute('x', px);
+    icone.setAttribute('y', py + 6);
+    icone.setAttribute('text-anchor', 'middle');
+    icone.setAttribute('fill', pc.cor || '#888');
+    icone.setAttribute('font-size', '20');
+    icone.textContent = '💻';
+    svg.appendChild(icone);
+
+    // Nome
+    const nome = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    nome.setAttribute('x', px);
+    nome.setAttribute('y', py + 52);
+    nome.setAttribute('text-anchor', 'middle');
+    nome.setAttribute('fill', '#fff');
+    nome.setAttribute('font-size', '12');
+    nome.setAttribute('font-weight', '700');
+    nome.textContent = `PC ${i + 1}`;
+    svg.appendChild(nome);
+
+    // IP
+    const ipTxt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    ipTxt.setAttribute('x', px);
+    ipTxt.setAttribute('y', py + 68);
+    ipTxt.setAttribute('text-anchor', 'middle');
+    ipTxt.setAttribute('fill', '#888');
+    ipTxt.setAttribute('font-size', '10');
+    ipTxt.setAttribute('font-family', 'monospace');
+    ipTxt.textContent = pc.ip || '—';
+    svg.appendChild(ipTxt);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CONTROLES DOS PCs
+   ═══════════════════════════════════════════════════════════════ */
+function renderControles() {
+  const cont = document.getElementById('controles');
+  cont.innerHTML = '';
+
+  pcs.forEach((pc, i) => {
+    const div = document.createElement('div');
+    div.className = 'pc-controle';
+    div.innerHTML = `
+      <h4><span class="bolinha" id="bol-${i}" style="background:${pc.cor || '#888'}"></span> 💻 PC ${i + 1}</h4>
+      <div class="campo">
+        <label>Endereço IP</label>
+        <input type="text" id="ip-${i}" placeholder="192.168.1.${i + 1}" value="${pc.ip || ''}">
+      </div>
+      <div class="campo">
+        <label>Máscara (prefixo)</label>
+        <input type="text" id="masc-${i}" placeholder="/24" value="${pc.masc || '/24'}" maxlength="3">
+      </div>
+    `;
+    cont.appendChild(div);
+  });
+
+  // Listener: atualiza o estado quando digita
+  pcs.forEach((pc, i) => {
+    document.getElementById(`ip-${i}`).addEventListener('input', (e) => {
+      pcs[i].ip = e.target.value.trim();
+    });
+    document.getElementById(`masc-${i}`).addEventListener('input', (e) => {
+      pcs[i].masc = e.target.value.trim();
+    });
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   VERIFICAR REDE
+   ═══════════════════════════════════════════════════════════════ */
+function verificarRede() {
+  // Coleta os dados
+  pcs.forEach((pc, i) => {
+    pc.ip = document.getElementById(`ip-${i}`).value.trim();
+    pc.masc = document.getElementById(`masc-${i}`).value.trim();
+  });
+
+  const resultado = document.getElementById('resultado');
+  let html = '<h3>🔍 Resultado da Verificação</h3>';
+
+  // Agrupa por sub-rede
+  const redes = {};
+  pcs.forEach((pc, i) => {
+    const ipInt = ipParaInt(pc.ip);
+    const mascInt = prefixoParaMascara(pc.masc);
+
+    if (ipInt === null || mascInt === null) {
+      pc.cor = '#888';
+      pc.rede = '—';
+      return;
+    }
+
+    const redeInt = (ipInt & mascInt) >>> 0;
+    const redeStr = intParaIp(redeInt) + pc.masc;
+
+    pc.cor = '#888';
+    pc.rede = redeStr;
+
+    if (!redes[redeStr]) redes[redeStr] = [];
+    redes[redeStr].push(i);
+  });
+
+  // Pinta as redes com cores diferentes
+  const cores = ['#00c9a7', '#4a90e2', '#bb00ff', '#ff6b35', '#ffd700'];
+  Object.keys(redes).forEach((rede, idx) => {
+    const cor = cores[idx % cores.length];
+    redes[rede].forEach(i => {
+      pcs[i].cor = cor;
+    });
+  });
+
+  // Mostra resultado
+  Object.entries(redes).forEach(([rede, indices], idx) => {
+    const cor = cores[idx % cores.length];
+    html += `<div style="margin-top:10px; border-left:4px solid ${cor}; padding-left:12px;">`;
+    html += `<strong style="color:${cor}">🌐 Sub-rede ${idx + 1}: ${rede}</strong><br>`;
+    indices.forEach(i => {
+      html += `<span class="tag" style="background:${cor}; color:#000; margin-right:6px;">PC ${i + 1} → ${pcs[i].ip}</span>`;
+    });
+    html += '</div>';
+  });
+
+  // Diagnóstico
+  if (Object.keys(redes).length === 1) {
+    html += `<div style="margin-top:14px; padding:10px; background:rgba(0,201,167,0.15); border-radius:8px; color:var(--green);">
+      ✅ <strong>Todos na mesma sub-rede!</strong> Podem se comunicar diretamente.
+    </div>`;
+  } else {
+    html += `<div style="margin-top:14px; padding:10px; background:rgba(255,107,53,0.15); border-radius:8px; color:var(--orange);">
+      ⚠️ <strong>Existem ${Object.keys(redes).length} sub-redes diferentes!</strong> Precisa de um roteador para comunicação entre elas.
+    </div>`;
+  }
+
+  resultado.innerHTML = html;
+  resultado.classList.add('mostrar');
+
+  desenharRede();
+  pcs.forEach((pc, i) => {
+    const bol = document.getElementById(`bol-${i}`);
+    if (bol) bol.style.background = pc.cor;
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ENVIAR PACOTE (animação)
+   ═══════════════════════════════════════════════════════════════ */
+function enviarPacote() {
+  const svg = document.getElementById('rede');
+  const origem = 0;
+  const destino = 3;
+
+  if (!pcs[origem].ip || !pcs[destino].ip) {
+    alert('Preencha os IPs primeiro!');
+    return;
+  }
+
+  const mesmaRede = pcs[origem].rede === pcs[destino].rede;
+
+  if (mesmaRede) {
+    animarPacoteDireto(svg, origem, destino, '#00c9a7');
+  } else {
+    animarPacoteViaRoteador(svg, origem, destino);
+  }
+}
+
+function animarPacoteDireto(svg, origem, destino, cor) {
+  const p1 = pcs[origem];
+  const p2 = pcs[destino];
+
+  const pacote = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  pacote.setAttribute('r', '10');
+  pacote.setAttribute('fill', cor);
+  pacote.setAttribute('cx', p1.x);
+  pacote.setAttribute('cy', p1.y);
+  pacote.setAttribute('filter', 'drop-shadow(0 0 10px ' + cor + ')');
+  svg.appendChild(pacote);
+
+  const duracao = 1500;
+  const inicio = performance.now();
+
+  function animar(t) {
+    const prog = Math.min((t - inicio) / duracao, 1);
+    const px = p1.x + (p2.x - p1.x) * prog;
+    const py = p1.y + (p2.y - p1.y) * prog;
+    pacote.setAttribute('cx', px);
+    pacote.setAttribute('cy', py);
+    if (prog < 1) requestAnimationFrame(animar);
+    else setTimeout(() => pacote.remove(), 500);
+  }
+  requestAnimationFrame(animar);
+}
+
+function animarPacoteViaRoteador(svg, origem, destino) {
+  const p1 = pcs[origem];
+  const p2 = pcs[destino];
+  const cx = 500, cy = 240;
+
+  const pacote = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  pacote.setAttribute('r', '10');
+  pacote.setAttribute('fill', '#ffd700');
+  pacote.setAttribute('cx', p1.x);
+  pacote.setAttribute('cy', p1.y);
+  pacote.setAttribute('filter', 'drop-shadow(0 0 10px #ffd700)');
+  svg.appendChild(pacote);
+
+  // Etapa 1: PC origem → Roteador
+  animar(p1.x, p1.y, cx, cy, 1000, () => {
+    // Etapa 2: Roteador → PC destino
+    animar(cx, cy, p2.x, p2.y, 1000, () => {
+      setTimeout(() => pacote.remove(), 500);
+    });
+  });
+
+  function animar(x1, y1, x2, y2, dur, cb) {
+    const inicio = performance.now();
+    function passo(t) {
+      const prog = Math.min((t - inicio) / dur, 1);
+      const px = x1 + (x2 - x1) * prog;
+      const py = y1 + (y2 - y1) * prog;
+      pacote.setAttribute('cx', px);
+      pacote.setAttribute('cy', py);
+      if (prog < 1) requestAnimationFrame(passo);
+      else cb();
+    }
+    requestAnimationFrame(passo);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ENVIAR BROADCAST
+   ═══════════════════════════════════════════════════════════════ */
+function enviarBroadcast() {
+  const svg = document.getElementById('rede');
+  const origem = 0;
+  const p1 = pcs[origem];
+
+  if (!p1.ip) {
+    alert('Preencha os IPs primeiro!');
+    return;
+  }
+
+  // Cria ondas circulares
+  for (let r = 0; r < 3; r++) {
+    setTimeout(() => {
+      const onda = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      onda.setAttribute('cx', p1.x);
+      onda.setAttribute('cy', p1.y);
+      onda.setAttribute('r', '30');
+      onda.setAttribute('fill', 'none');
+      onda.setAttribute('stroke', '#ff6b35');
+      onda.setAttribute('stroke-width', '3');
+      onda.setAttribute('opacity', '0.8');
+      svg.appendChild(onda);
+
+      const inicio = performance.now();
+      const duracao = 1200;
+
+      function animar(t) {
+        const prog = Math.min((t - inicio) / duracao, 1);
+        onda.setAttribute('r', 30 + prog * 250);
+        onda.setAttribute('opacity', 0.8 - prog * 0.8);
+        if (prog < 1) requestAnimationFrame(animar);
+        else onda.remove();
+      }
+      requestAnimationFrame(animar);
+    }, r * 300);
+  }
+
+  // Acende os PCs
+  pcs.forEach((pc, i) => {
+    const circulo = document.getElementById(`pc-${i}`);
+    if (circulo) {
+      circulo.setAttribute('stroke', '#ff6b35');
+      circulo.setAttribute('stroke-width', '5');
+      setTimeout(() => {
+        circulo.setAttribute('stroke', pc.cor || '#888');
+        circulo.setAttribute('stroke-width', '3');
+      }, 2000);
+    }
+  });
+
+  // Mensagem
+  const resultado = document.getElementById('resultado');
+  resultado.innerHTML = `
+    <h3>📢 Broadcast enviado!</h3>
+    <p style="color:#ccc; font-size:0.85rem;">
+      O PC 1 enviou uma mensagem para <strong>todos os PCs da rede</strong> ao mesmo tempo.<br>
+      Isso é possível porque ele usou o <strong>endereço de broadcast</strong> da sub-rede.<br><br>
+      💡 <em>Por isso o último endereço de uma rede é reservado — ele é o "megafone".</em>
+    </p>
+  `;
+  resultado.classList.add('mostrar');
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PREENCHER EXEMPLO / LIMPAR
+   ═══════════════════════════════════════════════════════════════ */
+function preencherExemplo() {
+  pcs.forEach((pc, i) => {
+    pc.ip = `${REDE_EXEMPLO}${i + 1}`;
+    pc.masc = MASCARA_EXEMPLO;
+    document.getElementById(`ip-${i}`).value = pc.ip;
+    document.getElementById(`masc-${i}`).value = pc.masc;
+  });
+  verificarRede();
+}
+
+function limparTudo() {
+  pcs.forEach((pc, i) => {
+    pc.ip = '';
+    pc.masc = '/24';
+    pc.cor = '#888';
+    pc.rede = null;
+    document.getElementById(`ip-${i}`).value = '';
+    document.getElementById(`masc-${i}`).value = '/24';
+    const bol = document.getElementById(`bol-${i}`);
+    if (bol) bol.style.background = '#888';
+  });
+  document.getElementById('resultado').classList.remove('mostrar');
+  desenharRede();
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   INICIALIZAÇÃO
+   ═══════════════════════════════════════════════════════════════ */
+function init() {
+  pcs = [];
+  for (let i = 0; i < QTD_PCS; i++) {
+    pcs.push({ ip: '', masc: '/24', cor: '#888', rede: null, x: 0, y: 0 });
+  }
+  renderControles();
+  desenharRede();
+}
+
+init();
+</script>
+</body>
+</html>

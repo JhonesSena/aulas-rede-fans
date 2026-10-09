@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔢 Binário do Zero — Aprenda com Animação</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0f0f1a;
+    --card: #1a1a2e;
+    --border: #2a2a4a;
+    --gold: #ffd700;
+    --orange: #ff6b35;
+    --green: #00c9a7;
+    --red: #ff3232;
+    --blue: #4a90e2;
+    --purple: #bb00ff;
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: var(--bg);
+    color: #fff;
+    min-height: 100vh;
+    padding: 16px;
+    line-height: 1.6;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 2rem;
+    background: linear-gradient(90deg, var(--green), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 6px;
+  }
+
+  .sub {
+    text-align: center;
+    color: #888;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+  }
+
+  /* ---- NAVEGAÇÃO DE MÓDULOS ---- */
+  .nav-modulos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 24px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .nav-modulos button {
+    background: var(--card);
+    color: #ccc;
+    border: 2px solid #333;
+    padding: 9px 14px;
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 700;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+
+  .nav-modulos button:hover { border-color: var(--orange); color: #fff; }
+  .nav-modulos button.ativo {
+    background: linear-gradient(135deg, var(--orange), var(--gold));
+    color: #000;
+    border-color: var(--gold);
+  }
+
+  /* ---- CONTEÚDO ---- */
+  .conteudo {
+    max-width: 1200px;
+    margin: 0 auto;
+    animation: fadeIn 0.4s;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card {
+    background: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .card h2 {
+    color: var(--gold);
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card h3 {
+    color: var(--green);
+    font-size: 1rem;
+    margin: 16px 0 8px;
+  }
+
+  .card p {
+    color: #ccc;
+    margin-bottom: 10px;
+    font-size: 0.92rem;
+  }
+
+  .card ul { margin-left: 20px; color: #ccc; font-size: 0.92rem; }
+  .card li { margin-bottom: 6px; }
+
+  code {
+    background: var(--bg);
+    color: var(--gold);
+    padding: 2px 7px;
+    border-radius: 5px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9em;
+  }
+
+  .destaque {
+    background: linear-gradient(135deg, var(--orange), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 900;
+  }
+
+  /* ---- CAIXA DE BIT ---- */
+  .bits-wrap {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 20px 0;
+  }
+
+  .bit-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .bit-valor {
+    font-size: 0.7rem;
+    color: var(--gold);
+    font-weight: 800;
+    font-family: monospace;
+  }
+
+  .bit {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    font-weight: 900;
+    font-family: monospace;
+    cursor: pointer;
+    user-select: none;
+    border: 3px solid var(--border);
+    background: var(--bg);
+    color: #444;
+    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+  }
+
+  .bit:hover { transform: translateY(-4px); }
+
+  .bit.ligado {
+    background: linear-gradient(135deg, var(--green), #00a88a);
+    color: #000;
+    border-color: var(--green);
+    box-shadow: 0 0 20px rgba(0,201,167,0.5);
+  }
+
+  .bit.desligado {
+    background: var(--bg);
+    color: #444;
+    border-color: var(--border);
+  }
+
+  .bit-label {
+    font-size: 0.65rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ---- RESULTADO DO INTERATIVO ---- */
+  .resultado-interativo {
+    text-align: center;
+    padding: 16px;
+    background: var(--bg);
+    border-radius: 12px;
+    margin-top: 16px;
+    border-left: 4px solid var(--green);
+  }
+
+  .resultado-interativo .conta {
+    font-family: monospace;
+    color: #aaa;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+  }
+
+  .resultado-interativo .valor {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--gold);
+  }
+
+  /* ---- TABELA POTÊNCIAS ---- */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 0.85rem;
+  }
+
+  thead th {
+    background: var(--bg);
+    color: var(--gold);
+    padding: 10px 8px;
+    text-align: center;
+    font-weight: 800;
+    border-bottom: 2px solid var(--border);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  tbody td {
+    padding: 10px 8px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    color: #ddd;
+    font-family: monospace;
+  }
+
+  tbody tr:hover { background: #16162a; }
+
+  .linha-destaque { background: rgba(255,215,0,0.08) !important; }
+
+  /* ---- BOTÕES ---- */
+  .btn {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 9px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    margin: 4px;
+  }
+
+  .btn-primario { background: linear-gradient(135deg, var(--orange), var(--gold)); color: #000; }
+  .btn-primario:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(255,107,53,0.5); }
+
+  .btn-sec { background: var(--bg); color: var(--gold); border: 2px solid var(--gold); }
+  .btn-sec:hover { background: var(--border); }
+
+  .btn-green { background: linear-gradient(135deg, var(--green), #00a88a); color: #000; }
+  .btn-green:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,201,167,0.5); }
+
+  .btn-purple { background: linear-gradient(135deg, var(--purple), #8800cc); color: #fff; }
+
+  /* ---- EXERCÍCIO ---- */
+  .exercicio {
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 16px 0;
+    border-left: 4px solid var(--orange);
+  }
+
+  .exercicio .pergunta {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 14px;
+  }
+
+  .exercicio .campo {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .exercicio input {
+    flex: 1;
+    min-width: 200px;
+    padding: 12px 16px;
+    background: var(--card);
+    border: 2px solid var(--border);
+    color: var(--gold);
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: 'Courier New', monospace;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  .exercicio input:focus { border-color: var(--gold); }
+  .exercicio input.correto { border-color: var(--green); background: rgba(0,201,167,0.1); color: var(--green); }
+  .exercicio input.errado { border-color: var(--red); background: rgba(255,50,50,0.1); color: #ff8080; }
+
+  .feedback {
+    margin-top: 12px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    display: none;
+  }
+
+  .feedback.ok { background: rgba(0,201,167,0.15); color: var(--green); border-left: 4px solid var(--green); display: block; }
+  .feedback.err { background: rgba(255,50,50,0.15); color: #ff8080; border-left: 4px solid var(--red); display: block; }
+  .feedback.info { background: rgba(255,215,0,0.1); color: var(--gold); border-left: 4px solid var(--gold); display: block; }
+
+  /* ---- PONTOS ---- */
+  .placar {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    background: var(--card);
+    border: 2px solid var(--gold);
+    border-radius: 12px;
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    z-index: 50;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  }
+
+  .placar .pts { color: var(--gold); font-size: 1.2rem; }
+
+  /* ---- CONVERSOR ---- */
+  .conversor {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 16px;
+    align-items: center;
+    margin: 20px 0;
+  }
+
+  @media (max-width: 700px) {
+    .conversor { grid-template-columns: 1fr; }
+  }
+
+  .conversor .lado {
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .conversor .lado label {
+    display: block;
+    color: #888;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  .conversor .lado input {
+    width: 100%;
+    padding: 12px;
+    background: var(--card);
+    border: 2px solid var(--border);
+    color: var(--gold);
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-family: monospace;
+    text-align: center;
+    outline: none;
+  }
+
+  .conversor .lado input:focus { border-color: var(--gold); }
+
+  .conversor .seta {
+    font-size: 2rem;
+    color: var(--gold);
+    text-align: center;
+  }
+
+  /* ---- MINI PIZZA (ponte com VLSM) ---- */
+  .ponte-vlsm {
+    background: linear-gradient(135deg, rgba(187,0,255,0.1), rgba(255,215,0,0.05));
+    border: 2px solid var(--purple);
+    border-radius: 16px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+
+  .ponte-vlsm h3 { color: var(--purple); margin-bottom: 10px; }
+
+  /* ---- ANIMAÇÃO PASSO A PASSO ---- */
+  .passos-anim {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 20px 0;
+  }
+
+  .passo-item {
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 14px 18px;
+    text-align: center;
+    border: 2px solid var(--border);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s;
+    min-width: 120px;
+  }
+
+  .passo-item.visivel { opacity: 1; transform: translateY(0); }
+
+  .passo-item .num {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--gold);
+    font-family: monospace;
+  }
+
+  .passo-item .txt {
+    font-size: 0.75rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 4px;
+  }
+
+  .passo-item.destaque-final {
+    border-color: var(--green);
+    background: rgba(0,201,167,0.15);
+    box-shadow: 0 0 30px rgba(0,201,167,0.3);
+  }
+
+  .passo-item.destaque-final .num { color: var(--green); }
+
+  @media print {
+    body { background: #fff; color: #000; }
+    .nav-modulos, .placar { display: none; }
+    .card { background: #fff; border-color: #000; }
+    h1, .card h2, .card h3 { color: #000; -webkit-text-fill-color: #000; background: none; }
+  }
+</style>
+</head>
+<body>
+
+<div style="padding: 16px; max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1);">
+  <button onclick="window.location.href='dashboard.html'" style="background:transparent; border:none; color:#ccc; cursor:pointer; font-weight:bold; font-size:1rem;">⬅ Voltar ao Dashboard</button>
+  <button onclick="concluirMissao('m1')" style="background: linear-gradient(135deg, #ff6b35, #ffd700); color: black; font-weight: bold; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">🏆 Concluir Missão 1</button>
+</div>
+<script>
+function concluirMissao(m) {
+    const user = JSON.parse(localStorage.getItem('vlsm_user'));
+    if(!user) return window.location.href='index.html';
+    let progress = JSON.parse(localStorage.getItem(`vlsm_badges_${user.email}`) || '[]');
+    if(!progress.includes(m)) {
+        progress.push(m);
+        localStorage.setItem(`vlsm_badges_${user.email}`, JSON.stringify(progress));
+    }
+    window.location.href = 'dashboard.html';
+}
+</script>
+
+<h1>🔢 Binário do Zero</h1>
+<p class="sub">Aprenda bit, byte, potências de 2 e como tudo isso vira sub-redes</p>
+
+<!-- PLACAR -->
+<div class="placar">
+  🏆 Pontos: <span class="pts" id="pts">0</span>
+</div>
+
+<!-- NAVEGAÇÃO -->
+<div class="nav-modulos">
+  <button class="ativo" onclick="mostrarModulo(1, this)">1. O que é bit?</button>
+  <button onclick="mostrarModulo(2, this)">2. Contando em binário</button>
+  <button onclick="mostrarModulo(3, this)">3. Potências de 2</button>
+  <button onclick="mostrarModulo(4, this)">4. Conversor interativo</button>
+  <button onclick="mostrarModulo(5, this)">5. Por que IP vai até 255?</button>
+  <button onclick="mostrarModulo(6, this)">6. Ponte com VLSM</button>
+  <button onclick="mostrarModulo(7, this)">7. Quiz final</button>
+</div>
+
+<!-- ============================================================
+     MÓDULO 1 — O QUE É BIT
+     ============================================================ -->
+<div class="conteudo" id="modulo-1">
+  <div class="card">
+    <h2>💡 O que é um BIT?</h2>
+    <p>Um <strong>bit</strong> é a <span class="destaque">menor unidade de informação</span> que existe no computador. Ele só pode ter <strong>2 valores</strong>:</p>
+
+    <div style="display:flex; gap:20px; justify-content:center; margin:20px 0; flex-wrap:wrap;">
+      <div style="text-align:center;">
+        <div style="width:100px; height:100px; border-radius:20px; background:var(--bg); border:3px solid var(--border); display:flex; align-items:center; justify-content:center; font-size:3rem; font-weight:900; color:#444;">0</div>
+        <p style="margin-top:8px; color:#888; font-size:0.8rem;">DESLIGADO</p>
+      </div>
+      <div style="text-align:center;">
+        <div style="width:100px; height:100px; border-radius:20px; background:linear-gradient(135deg,var(--green),#00a88a); display:flex; align-items:center; justify-content:center; font-size:3rem; font-weight:900; color:#000; box-shadow:0 0 30px rgba(0,201,167,0.5);">1</div>
+        <p style="margin-top:8px; color:var(--green); font-size:0.8rem;">LIGADO</p>
+      </div>
+    </div>
+
+    <h3>🔌 Analogia do interruptor</h3>
+    <p>Pensa numa <strong>lâmpada</strong>:</p>
+    <ul>
+      <li>💡 Apagada = <code>0</code></li>
+      <li>💡 Acesa = <code>1</code></li>
+    </ul>
+    <p>Um bit é exatamente isso: <strong>ligado ou desligado</strong>. Não existe meio-termo.</p>
+
+    <h3>📦 E vários bits juntos?</h3>
+    <p>Quando juntamos bits, cada um vale o <strong>dobro</strong> do anterior:</p>
+
+    <div class="bits-wrap">
+      <div class="bit-box"><div class="bit-valor">4</div><div class="bit desligado">0</div></div>
+      <div class="bit-box"><div class="bit-valor">2</div><div class="bit desligado">0</div></div>
+      <div class="bit-box"><div class="bit-valor">1</div><div class="bit desligado">0</div></div>
+    </div>
+
+    <p style="text-align:center; color:#888; font-size:0.85rem;">Com 3 bits, você consegue representar <strong>8 valores diferentes</strong> (000, 001, 010, ..., 111).</p>
+
+    <h3>🎯 Em resumo:</h3>
+    <ul>
+      <li><strong>1 bit</strong> → 2 valores (0 ou 1)</li>
+      <li><strong>2 bits</strong> → 4 valores (00, 01, 10, 11)</li>
+      <li><strong>3 bits</strong> → 8 valores</li>
+      <li><strong>8 bits</strong> → <strong>256 valores</strong> (é por isso que o IP vai até 255!)</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ============================================================
+     MÓDULO 2 — CONTANDO EM BINÁRIO
+     ============================================================ -->
+<div class="conteudo" id="modulo-2" style="display:none;">
+  <div class="card">
+    <h2>🔢 Contando em binário</h2>
+    <p>No dia a dia usamos <strong>decimal</strong> (0 a 9). No computador, usamos <strong>binário</strong> (0 e 1).</p>
+
+    <h3>📊 Comparando os dois sistemas</h3>
+    <table>
+      <thead>
+        <tr><th>Decimal</th><th>Binário</th><th>Decimal</th><th>Binário</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>0</td><td>0000</td><td>8</td><td>1000</td></tr>
+        <tr><td>1</td><td>0001</td><td>9</td><td>1001</td></tr>
+        <tr><td>2</td><td>0010</td><td>10</td><td>1010</td></tr>
+        <tr><td>3</td><td>0011</td><td>11</td><td>1011</td></tr>
+        <tr><td>4</td><td>0100</td><td>12</td><td>1100</td></tr>
+        <tr><td>5</td><td>0101</td><td>13</td><td>1101</td></tr>
+        <tr><td>6</td><td>0110</td><td>14</td><td>1110</td></tr>
+        <tr><td>7</td><td>0111</td><td>15</td><td>1111</td></tr>
+      </tbody>
+    </table>
+
+    <h3>🧠 O segredo: os PESOS</h3>
+    <p>Cada posição do binário tem um <strong>peso</strong> (potência de 2), da direita pra esquerda:</p>
+
+    <div class="bits-wrap">
+      <div class="bit-box"><div class="bit-valor">8</div><div class="bit desligado">0</div><div class="bit-label">2³</div></div>
+      <div class="bit-box"><div class="bit-valor">4</div><div class="bit desligado">0</div><div class="bit-label">2²</div></div>
+      <div class="bit-box"><div class="bit-valor">2</div><div class="bit desligado">0</div><div class="bit-label">2¹</div></div>
+      <div class="bit-box"><div class="bit-valor">1</div><div class="bit desligado">0</div><div class="bit-label">2⁰</div></div>
+    </div>
+
+    <h3>✏️ Como converter binário → decimal</h3>
+    <p>Some os pesos das posições que têm <code>1</code>.</p>
+
+    <div class="exercicio" style="border-left-color: var(--green);">
+      <p class="pergunta">🔍 Exemplo: quanto vale <code>1011</code> em decimal?</p>
+      <div class="conta-detalhada" style="font-family:monospace; background:var(--card); padding:14px; border-radius:10px; font-size:0.9rem; line-height:2;">
+        <div>1 × 8 = <strong style="color:var(--gold)">8</strong></div>
+        <div>0 × 4 = 0</div>
+        <div>1 × 2 = <strong style="color:var(--gold)">2</strong></div>
+        <div>1 × 1 = <strong style="color:var(--gold)">1</strong></div>
+        <div style="border-top:2px solid var(--border); margin-top:6px; padding-top:6px;">Total = 8 + 2 + 1 = <strong style="color:var(--green); font-size:1.3rem;">11</strong></div>
+      </div>
+    </div>
+
+    <h3>🎮 Tente você mesmo!</h3>
+    <p>Clique nos bits abaixo pra montar o número binário e veja o decimal mudar em tempo real:</p>
+
+    <div class="bits-wrap" id="bits-interativo-1">
+      <div class="bit-box"><div class="bit-valor">128</div><div class="bit desligado" onclick="toggleBit(this, 'inter1')" data-peso="128">0</div></div>
+      <div class="bit-box"><div class="bit-valor">64</div><div class="bit desligado" onclick="toggleBit(this, 'inter1')" data-peso="64">0</div></div>
+      <div class="bit-box"><div class="bit-valor">32</div><div class="bit desligado" onclick="toggleBit(this, 'inter1')" data-peso="32">0</div></div>
+      <div class="bit-box"><div class="bit-valor">16</div><div class="bit desligado" onclick="toggleBit(this, 'inter1')" data-peso="16">0</div></div>
+      <div class="bit-box"><div class="bit-valor">8</div><div class="bit desligado" onclick="toggleBit(this, 'inter1')" data-peso="8">0</div></div>
+      <div class="bit-box"><div class="bit-valor">4</div><div class="bit desligado" onclick="toggleBit(this, 'inter1')" data-peso="4">0</div></div>
+      <div class="bit-box"><div class="bit-valor">2</div><div class="bit desligado" onclick="toggleBit(this, 'inter1')" data-peso="2">0</div></div>
+      <div class="bit-box"><div class="bit-valor">1</div><div class="bit desligado" onclick="toggleBit(this, 'inter1')" data-peso="1">0</div></div>
+    </div>
+
+    <div class="resultado-interativo">
+      <div class="conta" id="conta-inter1">Clique nos bits pra começar...</div>
+      <div class="valor" id="valor-inter1">0</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MÓDULO 3 — POTÊNCIAS DE 2
+     ============================================================ -->
+<div class="conteudo" id="modulo-3" style="display:none;">
+  <div class="card">
+    <h2>📈 Potências de 2 — a base de tudo</h2>
+    <p>Todo cálculo de sub-rede gira em torno de <strong>potências de 2</strong>. Decore esta tabela:</p>
+
+    <table>
+      <thead>
+        <tr><th>2ⁿ</th><th>Valor</th><th>Uso em redes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>2⁰</td><td>1</td><td>—</td></tr>
+        <tr><td>2¹</td><td>2</td><td>Link ponto-a-ponto /30</td></tr>
+        <tr><td>2²</td><td>4</td><td>/30 → 2 hosts</td></tr>
+        <tr><td>2³</td><td>8</td><td>/29 → 6 hosts</td></tr>
+        <tr><td>2⁴</td><td>16</td><td>/28 → 14 hosts</td></tr>
+        <tr><td>2⁵</td><td>32</td><td>/27 → 30 hosts</td></tr>
+        <tr class="linha-destaque"><td>2⁶</td><td><strong>64</strong></td><td><strong>/26 → 62 hosts</strong></td></tr>
+        <tr class="linha-destaque"><td>2⁷</td><td><strong>128</strong></td><td><strong>/25 → 126 hosts</strong></td></tr>
+        <tr class="linha-destaque"><td>2⁸</td><td><strong>256</strong></td><td><strong>/24 → 254 hosts</strong></td></tr>
+        <tr><td>2⁹</td><td>512</td><td>/23 → 510 hosts</td></tr>
+        <tr><td>2¹⁰</td><td>1.024</td><td>/22 → 1.022 hosts</td></tr>
+        <tr><td>2¹⁶</td><td>65.536</td><td>/16 → Classe B</td></tr>
+        <tr><td>2²⁴</td><td>16.777.216</td><td>/8 → Classe A</td></tr>
+      </tbody>
+    </table>
+
+    <h3>🎯 Regra de ouro</h3>
+    <div class="ponte-vlsm" style="border-color: var(--gold);">
+      <p style="font-size:1.1rem; color:#fff; margin:0;"><strong>Hosts utilizáveis = 2ⁿ − 2</strong></p>
+      <p style="color:#aaa; font-size:0.85rem; margin-top:6px;">O "−2" é por causa do endereço de <strong>rede</strong> e do <strong>broadcast</strong>.</p>
+    </div>
+
+    <h3>🧮 Calculadora rápida: quantos hosts cabem?</h3>
+    <div class="exercicio">
+      <p class="pergunta">Digite uma potência (ex: 6 para 2⁶):</p>
+      <div class="campo">
+        <input type="number" id="calc-pot" placeholder="Ex: 6" min="0" max="24" oninput="calcPotencia()">
+      </div>
+      <div class="feedback info" id="feedback-pot" style="display:none;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MÓDULO 4 — CONVERSOR INTERATIVO
+     ============================================================ -->
+<div class="conteudo" id="modulo-4" style="display:none;">
+  <div class="card">
+    <h2>🔄 Conversor Binário ↔ Decimal</h2>
+    <p>Digite de um lado e veja a conversão acontecer no outro <strong>em tempo real</strong>:</p>
+
+    <div class="conversor">
+      <div class="lado">
+        <label>Decimal</label>
+        <input type="number" id="conv-dec" placeholder="0 - 255" min="0" max="255" oninput="converterDecBin()">
+      </div>
+      <div class="seta">⇄</div>
+      <div class="lado">
+        <label>Binário</label>
+        <input type="text" id="conv-bin" placeholder="00000000" maxlength="8" oninput="converterBinDec()">
+      </div>
+    </div>
+
+    <h3>🎮 Ou clique nos bits:</h3>
+    <div class="bits-wrap" id="bits-interativo-2">
+      <div class="bit-box"><div class="bit-valor">128</div><div class="bit desligado" onclick="toggleBit(this, 'inter2')" data-peso="128">0</div></div>
+      <div class="bit-box"><div class="bit-valor">64</div><div class="bit desligado" onclick="toggleBit(this, 'inter2')" data-peso="64">0</div></div>
+      <div class="bit-box"><div class="bit-valor">32</div><div class="bit desligado" onclick="toggleBit(this, 'inter2')" data-peso="32">0</div></div>
+      <div class="bit-box"><div class="bit-valor">16</div><div class="bit desligado" onclick="toggleBit(this, 'inter2')" data-peso="16">0</div></div>
+      <div class="bit-box"><div class="bit-valor">8</div><div class="bit desligado" onclick="toggleBit(this, 'inter2')" data-peso="8">0</div></div>
+      <div class="bit-box"><div class="bit-valor">4</div><div class="bit desligado" onclick="toggleBit(this, 'inter2')" data-peso="4">0</div></div>
+      <div class="bit-box"><div class="bit-valor">2</div><div class="bit desligado" onclick="toggleBit(this, 'inter2')" data-peso="2">0</div></div>
+      <div class="bit-box"><div class="bit-valor">1</div><div class="bit desligado" onclick="toggleBit(this, 'inter2')" data-peso="1">0</div></div>
+    </div>
+
+    <div class="resultado-interativo">
+      <div class="conta" id="conta-inter2">Clique nos bits pra começar...</div>
+      <div class="valor" id="valor-inter2">0</div>
+    </div>
+
+    <h3>💪 Desafio: converta estes números</h3>
+    <div class="exercicio" id="ex-4-1">
+      <p class="pergunta">1. Quanto vale <code>11001010</code> em decimal?</p>
+      <div class="campo">
+        <input type="number" placeholder="Digite o decimal">
+        <button class="btn btn-primario" onclick="checar(4, 1, 202)">Verificar</button>
+      </div>
+      <div class="feedback" id="fb-4-1"></div>
+    </div>
+
+    <div class="exercicio" id="ex-4-2">
+      <p class="pergunta">2. Como se escreve <code>170</code> em binário? (8 bits)</p>
+      <div class="campo">
+        <input type="text" placeholder="Ex: 10101010" maxlength="8">
+        <button class="btn btn-primario" onclick="checar(4, 2, '10101010')">Verificar</button>
+      </div>
+      <div class="feedback" id="fb-4-2"></div>
+    </div>
+
+    <div class="exercicio" id="ex-4-3">
+      <p class="pergunta">3. Quanto vale <code>11111111</code> em decimal?</p>
+      <div class="campo">
+        <input type="number" placeholder="Digite o decimal">
+        <button class="btn btn-primario" onclick="checar(4, 3, 255)">Verificar</button>
+      </div>
+      <div class="feedback" id="fb-4-3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MÓDULO 5 — POR QUE IP VAI ATÉ 255
+     ============================================================ -->
+<div class="conteudo" id="modulo-5" style="display:none;">
+  <div class="card">
+    <h2>🌐 Por que o IP vai só até 255?</h2>
+    <p>Um endereço IP é formado por <strong>4 números</strong> separados por pontos:</p>
+
+    <div style="text-align:center; font-size:2rem; font-family:monospace; color:var(--gold); margin:20px 0; font-weight:900;">
+      192 . 168 . 1 . 50
+    </div>
+
+    <p>Cada um desses números é um <strong>byte</strong> (8 bits). E 8 bits só conseguem representar <strong>256 valores</strong> (de 0 a 255).</p>
+
+    <h3>🧮 A conta:</h3>
+    <div class="bits-wrap">
+      <div class="bit-box"><div class="bit-valor">128</div><div class="bit ligado">1</div></div>
+      <div class="bit-box"><div class="bit-valor">64</div><div class="bit ligado">1</div></div>
+      <div class="bit-box"><div class="bit-valor">32</div><div class="bit ligado">1</div></div>
+      <div class="bit-box"><div class="bit-valor">16</div><div class="bit ligado">1</div></div>
+      <div class="bit-box"><div class="bit-valor">8</div><div class="bit ligado">1</div></div>
+      <div class="bit-box"><div class="bit-valor">4</div><div class="bit ligado">1</div></div>
+      <div class="bit-box"><div class="bit-valor">2</div><div class="bit ligado">1</div></div>
+      <div class="bit-box"><div class="bit-valor">1</div><div class="bit ligado">1</div></div>
+    </div>
+
+    <p style="text-align:center; margin-top:12px;">Quando todos os bits estão <strong>ligados</strong>:</p>
+    <p style="text-align:center; font-family:monospace; font-size:1.2rem; color:var(--green);">
+      128 + 64 + 32 + 16 + 8 + 4 + 2 + 1 = <strong>255</strong>
+    </p>
+
+    <p style="text-align:center; margin-top:12px; color:#aaa;">E 0 a 255 são <strong>256 valores</strong> possíveis. Por isso o IP nunca passa disso.</p>
+
+    <h3>🎯 Conexão com máscaras</h3>
+    <p>Quando você vê uma máscara como <code>255.255.255.0</code>, está vendo:</p>
+    <ul>
+      <li><code>255</code> = 8 bits ligados (<code>11111111</code>)</li>
+      <li><code>0</code> = 8 bits desligados (<code>00000000</code>)</li>
+    </ul>
+    <p>Ou seja: a máscara <code>255.255.255.0</code> tem <strong>24 bits ligados</strong> → é o famoso <code>/24</code>!</p>
+  </div>
+</div>
+
+<!-- ============================================================
+     MÓDULO 6 — PONTE COM VLSM
+     ============================================================ -->
+<div class="conteudo" id="modulo-6" style="display:none;">
+  <div class="card">
+    <h2>🍕 Ponte com VLSM</h2>
+    <p>Agora que você entende bits, vamos ver <strong>como isso vira sub-redes</strong>.</p>
+
+    <h3>🎬 Acompanhe o raciocínio</h3>
+    <p>Você tem uma rede <code>192.168.1.0/24</code> e precisa acomodar um setor com <strong>60 hosts</strong>.</p>
+
+    <div class="passos-anim" id="passos-anim">
+      <div class="passo-item">
+        <div class="num">60</div>
+        <div class="txt">Hosts pedidos</div>
+      </div>
+      <div class="passo-item">
+        <div class="num">62</div>
+        <div class="txt">60 + 2 (rede + broadcast)</div>
+      </div>
+      <div class="passo-item">
+        <div class="num">2⁶ = 64</div>
+        <div class="txt">Menor potência que cabe</div>
+      </div>
+      <div class="passo-item destaque-final">
+        <div class="num">/26</div>
+        <div class="txt">Máscara final</div>
+      </div>
+    </div>
+
+    <button class="btn btn-purple" onclick="animarPassos()">▶️ Animar raciocínio</button>
+
+    <h3>🧠 Por que /26?</h3>
+    <p>Porque 26 bits ficam ligados na máscara, sobrando <strong>6 bits</strong> pra hosts (32 − 26 = 6):</p>
+    <p style="font-family:monospace; color:var(--gold); text-align:center; font-size:1.1rem; margin:10px 0;">
+      2⁶ = 64 endereços totais → 62 utilizáveis
+    </p>
+
+    <h3>🗺️ Tabela de conversão rápida</h3>
+    <table>
+      <thead>
+        <tr><th>Hosts</th><th>Precisa</th><th>Potência</th><th>Máscara</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>6</td><td>8</td><td>2³</td><td>/29</td></tr>
+        <tr><td>14</td><td>16</td><td>2⁴</td><td>/28</td></tr>
+        <tr><td>30</td><td>32</td><td>2⁵</td><td>/27</td></tr>
+        <tr class="linha-destaque"><td>60</td><td>62</td><td>2⁶</td><td>/26</td></tr>
+        <tr><td>100</td><td>128</td><td>2⁷</td><td>/25</td></tr>
+        <tr><td>200</td><td>256</td><td>2⁸</td><td>/24</td></tr>
+      </tbody>
+    </table>
+
+    <h3>🎮 Treino: qual máscara usar?</h3>
+    <div class="exercicio" id="ex-6-1">
+      <p class="pergunta">1. Preciso acomodar <strong>25 hosts</strong>. Qual máscara?</p>
+      <div class="campo">
+        <input type="text" placeholder="Ex: /26">
+        <button class="btn btn-primario" onclick="checar(6, 1, '/27')">Verificar</button>
+      </div>
+      <div class="feedback" id="fb-6-1"></div>
+    </div>
+
+    <div class="exercicio" id="ex-6-2">
+      <p class="pergunta">2. Preciso acomodar <strong>100 hosts</strong>. Qual máscara?</p>
+      <div class="campo">
+        <input type="text" placeholder="Ex: /26">
+        <button class="btn btn-primario" onclick="checar(6, 2, '/25')">Verificar</button>
+      </div>
+      <div class="feedback" id="fb-6-2"></div>
+    </div>
+
+    <div class="exercicio" id="ex-6-3">
+      <p class="pergunta">3. Preciso acomodar <strong>8 hosts</strong>. Qual máscara?</p>
+      <div class="campo">
+        <input type="text" placeholder="Ex: /26">
+        <button class="btn btn-primario" onclick="checar(6, 3, '/28')">Verificar</button>
+      </div>
+      <div class="feedback" id="fb-6-3"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     MÓDULO 7 — QUIZ FINAL
+     ============================================================ -->
+<div class="conteudo" id="modulo-7" style="display:none;">
+  <div class="card">
+    <h2>🏆 Quiz Final</h2>
+    <p>Teste tudo que aprendeu! Cada acerto vale <strong>10 pontos</strong>.</p>
+
+    <div id="quiz-container"></div>
+
+    <div style="text-align:center; margin-top:20px;">
+      <button class="btn btn-green" onclick="reiniciarQuiz()">🔄 Reiniciar Quiz</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   ESTADO GLOBAL
+   ============================================================ */
+let pontos = 0;
+let bitEstado = { inter1: [0,0,0,0,0,0,0,0], inter2: [0,0,0,0,0,0,0,0] };
+
+function atualizarPontos() {
+  document.getElementById('pts').textContent = pontos;
+}
+
+function addPontos(n) {
+  pontos += n;
+  atualizarPontos();
+}
+
+/* ============================================================
+   NAVEGAÇÃO ENTRE MÓDULOS
+   ============================================================ */
+function mostrarModulo(n, btn) {
+  document.querySelectorAll('.conteudo').forEach(el => el.style.display = 'none');
+  document.getElementById('modulo-' + n).style.display = 'block';
+  document.querySelectorAll('.nav-modulos button').forEach(b => b.classList.remove('ativo'));
+  if (btn) btn.classList.add('ativo');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ============================================================
+   BITS INTERATIVOS
+   ============================================================ */
+function toggleBit(el, grupo) {
+  const peso = parseInt(el.dataset.peso);
+  const ligado = el.classList.contains('ligado');
+
+  if (ligado) {
+    el.classList.remove('ligado');
+    el.classList.add('desligado');
+    el.textContent = '0';
+    bitEstado[grupo][Math.log2(peso)] = 0;
+  } else {
+    el.classList.remove('desligado');
+    el.classList.add('ligado');
+    el.textContent = '1';
+    bitEstado[grupo][Math.log2(peso)] = 1;
+  }
+
+  atualizarResultado(grupo);
+}
+
+function atualizarResultado(grupo) {
+  const pesos = [128, 64, 32, 16, 8, 4, 2, 1];
+  const binStr = bitEstado[grupo].join('');
+  const decimal = pesos.reduce((s, p, i) => s + (bitEstado[grupo][i] ? p : 0), 0);
+
+  document.getElementById('conta-' + grupo).innerHTML = `<code>${binStr}</code> em binário`;
+  document.getElementById('valor-' + grupo).textContent = decimal;
+
+  // Sincroniza com o conversor (só pro inter2)
+  if (grupo === 'inter2') {
+    document.getElementById('conv-dec').value = decimal || '';
+    document.getElementById('conv-bin').value = binStr;
+  }
+}
+
+/* ============================================================
+   CONVERSOR
+   ============================================================ */
+function converterDecBin() {
+  const dec = parseInt(document.getElementById('conv-dec').value);
+  if (isNaN(dec) || dec < 0 || dec > 255) {
+    document.getElementById('conv-bin').value = '';
+    return;
+  }
+  const bin = dec.toString(2).padStart(8, '0');
+  document.getElementById('conv-bin').value = bin;
+
+  // Atualiza os bits visuais
+  const bits = document.querySelectorAll('#bits-interativo-2 .bit');
+  bits.forEach((b, i) => {
+    const val = bin[i];
+    bitEstado['inter2'][i] = parseInt(val);
+    if (val === '1') {
+      b.classList.remove('desligado'); b.classList.add('ligado'); b.textContent = '1';
+    } else {
+      b.classList.remove('ligado'); b.classList.add('desligado'); b.textContent = '0';
+    }
+  });
+  atualizarResultado('inter2');
+}
+
+function converterBinDec() {
+  const bin = document.getElementById('conv-bin').value.replace(/[^01]/g, '').padStart(8, '0').slice(-8);
+  document.getElementById('conv-bin').value = bin;
+
+  const dec = parseInt(bin, 2) || 0;
+  document.getElementById('conv-dec').value = dec;
+
+  const bits = document.querySelectorAll('#bits-interativo-2 .bit');
+  bits.forEach((b, i) => {
+    const val = bin[i];
+    bitEstado['inter2'][i] = parseInt(val);
+    if (val === '1') {
+      b.classList.remove('desligado'); b.classList.add('ligado'); b.textContent = '1';
+    } else {
+      b.classList.remove('ligado'); b.classList.add('desligado'); b.textContent = '0';
+    }
+  });
+  atualizarResultado('inter2');
+}
+
+/* ============================================================
+   CALCULADORA DE POTÊNCIA
+   ============================================================ */
+function calcPotencia() {
+  const n = parseInt(document.getElementById('calc-pot').value);
+  const fb = document.getElementById('feedback-pot');
+  if (isNaN(n) || n < 0 || n > 24) {
+    fb.style.display = 'none';
+    return;
+  }
+  const total = Math.pow(2, n);
+  const hosts = total - 2;
+  const mascara = `/${32 - n}`;
+
+  fb.className = 'feedback info';
+  fb.innerHTML = `
+    <strong>2^${n} = ${total.toLocaleString('pt-BR')}</strong> endereços totais<br>
+    → <strong>${hosts.toLocaleString('pt-BR')}</strong> hosts utilizáveis (2^n − 2)<br>
+    → Máscara: <strong>${mascara}</strong>
+  `;
+  fb.style.display = 'block';
+}
+
+/* ============================================================
+   CHECAR EXERCÍCIOS
+   ============================================================ */
+function checar(modulo, num, correto) {
+  const ex = document.getElementById(`ex-${modulo}-${num}`);
+  const input = ex.querySelector('input');
+  const fb = document.getElementById(`fb-${modulo}-${num}`);
+  const resp = input.value.trim();
+  const correta = String(correto);
+  const igual = resp.toLowerCase() === correta.toLowerCase();
+
+  if (igual) {
+    input.classList.add('correto');
+    input.classList.remove('errado');
+    fb.className = 'feedback ok';
+    fb.innerHTML = `✅ Parabéns! Resposta correta: <strong>${correta}</strong>`;
+    fb.style.display = 'block';
+    if (!ex.dataset.pontuado) {
+      ex.dataset.pontuado = '1';
+      addPontos(10);
+      mostrarToast(`+10 pontos! Total: ${pontos}`);
+    }
+  } else {
+    input.classList.add('errado');
+    input.classList.remove('correto');
+    fb.className = 'feedback err';
+    fb.innerHTML = `❌ Ainda não. Tente novamente!<br>💡 Dica: use a tabela de potências de 2.`;
+    fb.style.display = 'block';
+  }
+}
+
+function mostrarToast(msg) {
+  const t = document.createElement('div');
+  t.style.cssText = `
+    position:fixed; top:80px; left:50%; transform:translateX(-50%);
+    background:linear-gradient(135deg,#00c9a7,#00a88a); color:#000;
+    padding:12px 20px; border-radius:12px; font-weight:800; font-size:0.9rem;
+    z-index:999; box-shadow:0 8px 24px rgba(0,201,167,0.4);
+    animation:fadeIn 0.3s;
+  `;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2500);
+}
+
+/* ============================================================
+   ANIMAÇÃO DE PASSOS
+   ============================================================ */
+function animarPassos() {
+  const passos = document.querySelectorAll('#passos-anim .passo-item');
+  passos.forEach(p => p.classList.remove('visivel'));
+  passos.forEach((p, i) => {
+    setTimeout(() => p.classList.add('visivel'), i * 500);
+  });
+}
+
+// Inicia a animação quando o módulo 6 é aberto
+const observer = new MutationObserver(() => {
+  if (document.getElementById('modulo-6').style.display !== 'none') {
+    setTimeout(animarPassos, 300);
+  }
+});
+observer.observe(document.getElementById('modulo-6'), { attributes: true, attributeFilter: ['style'] });
+
+/* ============================================================
+   QUIZ FINAL
+   ============================================================ */
+const QUIZ = [
+  { q: "Quantos valores diferentes um bit pode representar?", opcoes: ["1", "2", "4", "8"], correta: 1 },
+  { q: "Quantos bits tem um byte?", opcoes: ["4", "8", "16", "32"], correta: 1 },
+  { q: "Qual o valor decimal de 10101010?", opcoes: ["170", "128", "85", "255"], correta: 0 },
+  { q: "Qual o valor máximo de um byte?", opcoes: ["127", "128", "255", "256"], correta: 2 },
+  { q: "2⁶ = ?", opcoes: ["32", "64", "128", "256"], correta: 1 },
+  { q: "Quantos hosts utilizáveis tem uma rede /26?", opcoes: ["62", "64", "30", "126"], correta: 0 },
+  { q: "Qual máscara usar para 100 hosts?", opcoes: ["/24", "/25", "/26", "/27"], correta: 1 },
+  { q: "O endereço de broadcast de 192.168.1.0/24 é:", opcoes: ["192.168.1.1", "192.168.1.254", "192.168.1.255", "192.168.1.0"], correta: 2 },
+  { q: "Na fórmula 2ⁿ − 2, o '−2' se deve a:", opcoes: ["Bits perdidos", "Rede e broadcast", "Gateway", "DNS"], correta: 1 },
+  { q: "Quantos bits ficam ligados na máscara 255.255.255.192?", opcoes: ["24", "25", "26", "27"], correta: 2 },
+];
+
+let quizRespondidas = {};
+
+function renderQuiz() {
+  const cont = document.getElementById('quiz-container');
+  cont.innerHTML = '';
+  quizRespondidas = {};
+
+  QUIZ.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'exercicio';
+    div.id = `quiz-${i}`;
+    div.innerHTML = `
+      <p class="pergunta">${i + 1}. ${q.q}</p>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        ${q.opcoes.map((op, j) => `
+          <button class="btn btn-sec" style="text-align:left; justify-content:flex-start; padding:10px 14px;" onclick="responderQuiz(${i}, ${j})">
+            ${String.fromCharCode(65 + j)}) ${op}
+          </button>
+        `).join('')}
+      </div>
+      <div class="feedback" id="fb-quiz-${i}"></div>
+    `;
+    cont.appendChild(div);
+  });
+}
+
+function responderQuiz(i, j) {
+  if (quizRespondidas[i]) return;
+  const q = QUIZ[i];
+  const fb = document.getElementById(`fb-quiz-${i}`);
+  const botoes = document.querySelectorAll(`#quiz-${i} button`);
+
+  botoes.forEach((b, k) => {
+    if (k === q.correta) b.style.background = 'linear-gradient(135deg, #00c9a7, #00a88a)';
+    else if (k === j) b.style.background = 'linear-gradient(135deg, #ff3232, #cc0000)';
+    b.disabled = true;
+  });
+
+  if (j === q.correta) {
+    fb.className = 'feedback ok';
+    fb.innerHTML = `✅ Correto! +10 pontos`;
+    addPontos(10);
+    mostrarToast(`+10 pontos! Total: ${pontos}`);
+  } else {
+    fb.className = 'feedback err';
+    fb.innerHTML = `❌ Errou. Resposta correta: <strong>${q.opcoes[q.correta]}</strong>`;
+  }
+  fb.style.display = 'block';
+  quizRespondidas[i] = true;
+}
+
+function reiniciarQuiz() {
+  renderQuiz();
+  mostrarToast('🔄 Quiz reiniciado!');
+}
+
+/* ============================================================
+   INICIALIZAÇÃO
+   ============================================================ */
+renderQuiz();
+atualizarPontos();
+</script>
+</body>
+</html>

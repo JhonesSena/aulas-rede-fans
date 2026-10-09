@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VLSM Master: Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800;900&display=swap');
+        body { font-family: 'Outfit', sans-serif; background: #0f0f1a; color: #fff; min-height: 100vh; }
+        .glass-panel { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; }
+        .text-gradient { background: linear-gradient(90deg, #ff6b35, #ffd700); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .badge-card { transition: all 0.3s; position: relative; overflow: hidden; border: 2px solid #2a2a4a; }
+        .badge-locked { opacity: 0.5; filter: grayscale(1); }
+        .badge-unlocked { border-color: #ffd700; box-shadow: 0 0 20px rgba(255,215,0,0.2); }
+        .btn-play { background: linear-gradient(135deg, #ff6b35, #ffd700); color: #000; font-weight: bold; transition: all 0.2s; }
+        .btn-play:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(255,107,53,0.4); }
+    </style>
+</head>
+<body class="p-6">
+    <header class="max-w-5xl mx-auto glass-panel p-6 flex flex-col md:flex-row justify-between items-center mb-8">
+        <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-full flex items-center justify-center text-3xl" style="background: linear-gradient(135deg, #ff6b35, #ffd700);">👤</div>
+            <div>
+                <h2 class="text-2xl font-bold text-gradient" id="user-name">Agente</h2>
+                <p class="text-sm text-gray-400">Progresso: <span id="prog-text">0/3</span> Missões</p>
+                <div class="w-full bg-gray-800 h-2 rounded mt-1 overflow-hidden">
+                    <div id="prog-bar" class="bg-yellow-400 h-full" style="width: 0%;"></div>
+                </div>
+            </div>
+        </div>
+        <button onclick="logout()" class="mt-4 md:mt-0 px-4 py-2 border border-red-500 text-red-400 rounded hover:bg-red-500 hover:text-white transition"><i class="fa-solid fa-power-off"></i> Sair</button>
+    </header>
+
+    <main class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Missão 1 -->
+        <div class="glass-panel badge-card p-6 text-center" id="card-m1">
+            <i class="fa-solid fa-microchip text-5xl text-gray-400 mb-4 block" id="icon-m1"></i>
+            <h3 class="text-lg font-bold text-yellow-400">Missão 1</h3>
+            <p class="text-sm text-gray-400 mb-4 h-10">Binário do Zero: Aprenda bits e converta IPs.</p>
+            <div id="action-m1"></div>
+        </div>
+        
+        <!-- Missão 2 -->
+        <div class="glass-panel badge-card badge-locked p-6 text-center" id="card-m2">
+            <i class="fa-solid fa-network-wired text-5xl text-gray-600 mb-4 block" id="icon-m2"></i>
+            <h3 class="text-lg font-bold text-gray-500">Missão 2</h3>
+            <p class="text-sm text-gray-500 mb-4 h-10">Simulador de Rede Animada: Broadcast e Roteamento.</p>
+            <div id="action-m2"><span class="text-xs bg-gray-800 px-3 py-1 rounded">Desbloqueie a Missão 1</span></div>
+        </div>
+        
+        <!-- Missão 3 -->
+        <div class="glass-panel badge-card badge-locked p-6 text-center" id="card-m3">
+            <i class="fa-solid fa-server text-5xl text-gray-600 mb-4 block" id="icon-m3"></i>
+            <h3 class="text-lg font-bold text-gray-500">Missão 3</h3>
+            <p class="text-sm text-gray-500 mb-4 h-10">VLSM Master: Fatie a rede e domine o mundo.</p>
+            <div id="action-m3"><span class="text-xs bg-gray-800 px-3 py-1 rounded">Requer Missão 2</span></div>
+        </div>
+    </main>
+
+    <script>
+        let user;
+        let progress = [];
+        window.onload = () => {
+            const userData = localStorage.getItem('vlsm_user');
+            if(!userData) window.location.href = 'index.html';
+            user = JSON.parse(userData);
+            document.getElementById('user-name').innerText = user.name;
+            
+            const progData = localStorage.getItem(`vlsm_badges_${user.email}`);
+            if(progData) progress = JSON.parse(progData);
+            
+            updateUI();
+        };
+
+        function logout() {
+            localStorage.removeItem('vlsm_user');
+            window.location.href = 'index.html';
+        }
+
+        function updateUI() {
+            const m1Done = progress.includes('m1');
+            const m2Done = progress.includes('m2');
+            const m3Done = progress.includes('m3');
+            
+            let count = (m1Done?1:0) + (m2Done?1:0) + (m3Done?1:0);
+            document.getElementById('prog-text').innerText = `${count}/3`;
+            document.getElementById('prog-bar').style.width = `${(count/3)*100}%`;
+
+            // Setup M1
+            if(m1Done) {
+                document.getElementById('card-m1').classList.add('badge-unlocked');
+                document.getElementById('icon-m1').className = "fa-solid fa-medal text-5xl text-yellow-400 mb-4 block";
+                document.getElementById('action-m1').innerHTML = `<button onclick="window.location.href='missao1.html'" class="px-4 py-2 border border-yellow-400 text-yellow-400 rounded text-sm hover:bg-yellow-400 hover:text-black">Refazer Missão</button>`;
+            } else {
+                document.getElementById('action-m1').innerHTML = `<button onclick="window.location.href='missao1.html'" class="btn-play px-6 py-2 rounded-lg text-sm w-full"><i class="fa-solid fa-play"></i> Iniciar Missão</button>`;
+            }
+
+            // Setup M2
+            if(m1Done) {
+                document.getElementById('card-m2').classList.remove('badge-locked');
+                document.getElementById('icon-m2').className = m2Done ? "fa-solid fa-medal text-5xl text-yellow-400 mb-4 block" : "fa-solid fa-network-wired text-5xl text-gray-400 mb-4 block";
+                document.getElementById('card-m2').classList.toggle('badge-unlocked', m2Done);
+                
+                if(m2Done) {
+                    document.getElementById('action-m2').innerHTML = `<button onclick="window.location.href='missao2.html'" class="px-4 py-2 border border-yellow-400 text-yellow-400 rounded text-sm hover:bg-yellow-400 hover:text-black">Refazer Missão</button>`;
+                } else {
+                    document.getElementById('action-m2').innerHTML = `<button onclick="window.location.href='missao2.html'" class="btn-play px-6 py-2 rounded-lg text-sm w-full"><i class="fa-solid fa-play"></i> Iniciar Missão 2</button>`;
+                }
+            }
+
+            // Setup M3
+            if(m2Done) {
+                document.getElementById('card-m3').classList.remove('badge-locked');
+                document.getElementById('icon-m3').className = m3Done ? "fa-solid fa-trophy text-5xl text-yellow-400 mb-4 block" : "fa-solid fa-server text-5xl text-gray-400 mb-4 block";
+                document.getElementById('card-m3').classList.toggle('badge-unlocked', m3Done);
+                
+                if(m3Done) {
+                    document.getElementById('action-m3').innerHTML = `<button onclick="window.location.href='missao3.html'" class="px-4 py-2 border border-yellow-400 text-yellow-400 rounded text-sm hover:bg-yellow-400 hover:text-black">Refazer Missão</button>`;
+                } else {
+                    document.getElementById('action-m3').innerHTML = `<button onclick="window.location.href='missao3.html'" class="btn-play px-6 py-2 rounded-lg text-sm w-full"><i class="fa-solid fa-play"></i> Iniciar Missão 3</button>`;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
